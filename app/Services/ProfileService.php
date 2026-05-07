@@ -36,22 +36,23 @@ class ProfileService
     }
 
     /**
-     * Upload a new avatar, deleting the previous one if it exists.
-     * Returns the new storage path.
+     * Upload a new avatar, deleting the previous one only after the new one
+     * is safely stored and persisted in the database.
      */
     public function updateAvatar(UploadedFile $file): string
     {
         $profile = $this->get();
+        $oldPath = $profile->avatar_path;
 
-        // Delete old avatar if present
-        $this->imageUploadService->delete($profile->avatar_path);
+        // Store new avatar first — if this fails, the old avatar is preserved.
+        $newPath = $this->imageUploadService->store($file, 'avatars');
 
-        // Store new avatar
-        $path = $this->imageUploadService->store($file, 'avatars');
+        // Persist the new path in the database.
+        $profile->update(['avatar_path' => $newPath]);
 
-        // Update profile record
-        $profile->update(['avatar_path' => $path]);
+        // Only now it's safe to delete the old avatar.
+        $this->imageUploadService->delete($oldPath);
 
-        return $path;
+        return $newPath;
     }
 }

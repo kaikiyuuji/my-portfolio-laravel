@@ -8,10 +8,13 @@ class ProfileUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * Currently checks that the user is authenticated. When roles/policies
+     * are added, replace with a Gate::allows() or policy check.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
