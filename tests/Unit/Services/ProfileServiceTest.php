@@ -149,6 +149,10 @@ class ProfileServiceTest extends TestCase
         $service = $this->makeService($mockUploadService);
         $file = UploadedFile::fake()->image('new-avatar.jpg');
         $service->updateAvatar($file);
+
+        $this->assertDatabaseHas('profiles', [
+            'avatar_path' => 'avatars/new-avatar.jpg',
+        ]);
     }
 
     protected function tearDown(): void
