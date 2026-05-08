@@ -59,14 +59,14 @@ import { Head, Link } from '@inertiajs/vue3';
                     <p class="text-slate-500 mt-1 text-sm">Trajetória profissional na timeline.</p>
                 </Link>
 
-                <!-- Projects (Placeholder) -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 opacity-60 grayscale cursor-not-allowed">
-                    <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mb-4">
+                <!-- Projects -->
+                <Link :href="route('admin.projects.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
+                    <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     </div>
-                    <h4 class="font-bold text-slate-800 text-lg">Projetos</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Em breve.</p>
-                </div>
+                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-rose-600 transition-colors">Projetos</h4>
+                    <p class="text-slate-500 mt-1 text-sm">Cards do portfolio com tecnologias e demos.</p>
+                </Link>
             </div>
         </div>
     </AuthenticatedLayout>

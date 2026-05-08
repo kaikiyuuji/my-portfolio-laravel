@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ExperienceController as AdminExperienceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('experiences', AdminExperienceController::class)
         ->except(['show'])
         ->names('admin.experiences');
+
+    // Projects. Reorder must precede the resource (same reasoning as Stacks).
+    Route::put('/projects/reorder', [AdminProjectController::class, 'reorder'])->name('admin.projects.reorder');
+    Route::resource('projects', AdminProjectController::class)
+        ->except(['show'])
+        ->names('admin.projects');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

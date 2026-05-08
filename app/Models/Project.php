@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Stack extends Model
+class Project extends Model
 {
     protected $fillable = [
-        'name',
-        'icon_slug',
-        'color',
+        'title',
+        'description',
+        'image_path',
+        'repository_url',
+        'demo_url',
         'order',
         'is_featured',
     ];
@@ -20,9 +22,9 @@ class Stack extends Model
         'is_featured' => 'boolean',
     ];
 
-    public function projects(): BelongsToMany
+    public function stacks(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_technologies')
+        return $this->belongsToMany(Stack::class, 'project_technologies')
             ->withTimestamps();
     }
 }
