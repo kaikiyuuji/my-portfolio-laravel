@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ExperienceController as AdminExperienceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
@@ -34,6 +35,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('stacks', AdminStackController::class)
         ->except(['show'])
         ->names('admin.stacks');
+
+    // Experiences (CRUD only — no reorder, ordering is automatic by start_date DESC).
+    Route::resource('experiences', AdminExperienceController::class)
+        ->except(['show'])
+        ->names('admin.experiences');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

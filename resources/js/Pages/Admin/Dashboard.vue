@@ -50,14 +50,14 @@ import { Head, Link } from '@inertiajs/vue3';
                     <p class="text-slate-500 mt-1 text-sm">Gerencie as stacks exibidas no portfolio.</p>
                 </Link>
 
-                <!-- Experiences (Placeholder) -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 opacity-60 grayscale cursor-not-allowed">
-                    <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mb-4">
+                <!-- Experiences -->
+                <Link :href="route('admin.experiences.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     </div>
-                    <h4 class="font-bold text-slate-800 text-lg">Experiências</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Em breve.</p>
-                </div>
+                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-amber-600 transition-colors">Experiências</h4>
+                    <p class="text-slate-500 mt-1 text-sm">Trajetória profissional na timeline.</p>
+                </Link>
 
                 <!-- Projects (Placeholder) -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 opacity-60 grayscale cursor-not-allowed">
