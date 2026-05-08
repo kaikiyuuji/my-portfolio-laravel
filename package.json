@@ -19,6 +19,8 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "dompurify": "^3.4.2",
+        "marked": "^18.0.3",
         "vue-i18n": "^9.14.5"
     }
 }

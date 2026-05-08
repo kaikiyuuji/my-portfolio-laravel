@@ -63,6 +63,10 @@ const messages = {
             backTop: 'Voltar ao topo',
         },
         months: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        meta: {
+            defaultDescription: 'Portfolio de desenvolvimento — projetos, stacks e artigos sobre engenharia de software.',
+            blogIndexDescription: 'Artigos sobre engenharia, produto e o caminho do desenvolvimento.',
+        },
     },
     en: {
         nav: {
@@ -124,6 +128,10 @@ const messages = {
             backTop: 'Back to top',
         },
         months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        meta: {
+            defaultDescription: 'Software development portfolio — projects, stacks and articles about software engineering.',
+            blogIndexDescription: 'Notes on engineering, product and the path of development.',
+        },
     },
 };
 

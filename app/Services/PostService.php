@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Post;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class PostService
@@ -14,11 +13,12 @@ class PostService
         private ImageUploadService $imageUploadService
     ) {}
 
-    public function all(): Collection
+    public function all(int $perPage = 20): LengthAwarePaginator
     {
         return Post::orderByDesc('published_at')
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function published(int $perPage = 9): LengthAwarePaginator

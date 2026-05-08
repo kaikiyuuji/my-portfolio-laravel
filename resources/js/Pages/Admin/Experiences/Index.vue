@@ -2,6 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useTranslatable } from '@/Composables/useTranslatable';
+
+const { tr } = useTranslatable();
 
 const props = defineProps({
     experiences: {
@@ -36,10 +39,6 @@ const formatPeriod = (start, end) => {
     return `${startStr} — ${endStr}`;
 };
 
-const tr = (val) => {
-    if (val && typeof val === 'object') return val.pt || val.en || '';
-    return val || '';
-};
 </script>
 
 <template>

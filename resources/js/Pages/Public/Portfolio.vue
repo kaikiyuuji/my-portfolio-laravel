@@ -4,16 +4,10 @@ import { useI18n } from 'vue-i18n';
 import { Head } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { useScrollReveal } from '@/Composables/useScrollReveal';
+import { useTranslatable } from '@/Composables/useTranslatable';
 
 const { t, tm, locale } = useI18n();
-
-function tr(field) {
-    if (field == null) return '';
-    if (typeof field === 'object') {
-        return field[locale.value] || field.pt || field.en || '';
-    }
-    return field;
-}
+const { tr } = useTranslatable();
 
 const props = defineProps({
     profile: { type: Object, required: true },
@@ -73,6 +67,17 @@ const avatarUrl = computed(() =>
     props.profile?.avatar_path ? '/storage/' + props.profile.avatar_path : null,
 );
 
+const ogTitle = computed(() => props.profile?.name || 'Portfolio');
+const ogDescription = computed(() => tr(props.profile?.bio) || tr(props.profile?.headline) || t('meta.defaultDescription'));
+const ogImage = computed(() => {
+    if (!avatarUrl.value) return null;
+    if (typeof window === 'undefined') return avatarUrl.value;
+    return new URL(avatarUrl.value, window.location.origin).toString();
+});
+const canonicalUrl = computed(() =>
+    typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
+);
+
 const projectImage = (path) => (path ? '/storage/' + path : null);
 
 const initials = computed(() => {
@@ -98,7 +103,19 @@ function formatPeriod(start, end) {
 </script>
 
 <template>
-    <Head :title="profile.name || 'Portfolio'" />
+    <Head :title="ogTitle">
+        <meta name="description" :content="ogDescription" />
+        <link v-if="canonicalUrl" rel="canonical" :href="canonicalUrl" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" :content="ogTitle" />
+        <meta property="og:description" :content="ogDescription" />
+        <meta v-if="ogImage" property="og:image" :content="ogImage" />
+        <meta v-if="canonicalUrl" property="og:url" :content="canonicalUrl" />
+        <meta name="twitter:card" :content="ogImage ? 'summary_large_image' : 'summary'" />
+        <meta name="twitter:title" :content="ogTitle" />
+        <meta name="twitter:description" :content="ogDescription" />
+        <meta v-if="ogImage" name="twitter:image" :content="ogImage" />
+    </Head>
 
     <PublicLayout :profile-name="profile.name || 'Portfolio'">
         <!-- ───────── Hero / Apresentação ───────── -->

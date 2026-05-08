@@ -3,6 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref } from 'vue';
+import { useTranslatable } from '@/Composables/useTranslatable';
+
+const { tr } = useTranslatable();
 
 const props = defineProps({
     projects: {
@@ -50,10 +53,6 @@ const persistOrder = async (orderedIds) => {
 
 const imageSrc = (path) => (path ? '/storage/' + path : null);
 
-const tr = (val) => {
-    if (val && typeof val === 'object') return val.pt || val.en || '';
-    return val || '';
-};
 </script>
 
 <template>

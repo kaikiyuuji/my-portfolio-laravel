@@ -1,8 +1,12 @@
 <script setup>
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Head, Link } from '@inertiajs/vue3';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { useScrollReveal } from '@/Composables/useScrollReveal';
+import { useTranslatable } from '@/Composables/useTranslatable';
 
 const props = defineProps({
     post: {
@@ -15,16 +19,9 @@ const props = defineProps({
     },
 });
 
-const { t, tm, locale } = useI18n();
+const { t, tm } = useI18n();
+const { tr } = useTranslatable();
 useScrollReveal('.reveal');
-
-function tr(field) {
-    if (field == null) return '';
-    if (typeof field === 'object') {
-        return field[locale.value] || field.pt || field.en || '';
-    }
-    return field;
-}
 
 const projectImage = (path) => (path ? '/storage/' + path : null);
 
@@ -40,10 +37,55 @@ function readingTime(body) {
     const words = text.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
     return Math.max(1, Math.ceil(words / 220));
 }
+
+// Render pipeline: tr() picks locale → marked() converts Markdown to HTML
+// (raw HTML in source passes through) → DOMPurify strips scripts/event handlers
+// before injection via v-html. Defense-in-depth against compromised admin account.
+marked.setOptions({ gfm: true, breaks: false });
+
+const sanitizedBody = computed(() => {
+    const raw = tr(props.post.body) || '';
+    const html = marked.parse(raw);
+    return DOMPurify.sanitize(html, {
+        USE_PROFILES: { html: true },
+        FORBID_TAGS: ['style', 'iframe', 'form', 'object', 'embed'],
+        FORBID_ATTR: ['style', 'onerror', 'onload', 'onclick'],
+    });
+});
+
+const ogTitle = computed(() => tr(props.post.title));
+const ogDescription = computed(() => {
+    const excerpt = tr(props.post.excerpt);
+    if (excerpt) return excerpt;
+    const plain = (tr(props.post.body) || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    return plain.slice(0, 160);
+});
+const ogImage = computed(() => {
+    const path = projectImage(props.post.image_path);
+    if (!path) return null;
+    if (typeof window === 'undefined') return path;
+    return new URL(path, window.location.origin).toString();
+});
+const canonicalUrl = computed(() =>
+    typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
+);
 </script>
 
 <template>
-    <Head :title="tr(post.title)" />
+    <Head :title="ogTitle">
+        <meta name="description" :content="ogDescription" />
+        <link v-if="canonicalUrl" rel="canonical" :href="canonicalUrl" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" :content="ogTitle" />
+        <meta property="og:description" :content="ogDescription" />
+        <meta v-if="ogImage" property="og:image" :content="ogImage" />
+        <meta v-if="canonicalUrl" property="og:url" :content="canonicalUrl" />
+        <meta v-if="post.published_at" property="article:published_time" :content="post.published_at" />
+        <meta name="twitter:card" :content="ogImage ? 'summary_large_image' : 'summary'" />
+        <meta name="twitter:title" :content="ogTitle" />
+        <meta name="twitter:description" :content="ogDescription" />
+        <meta v-if="ogImage" name="twitter:image" :content="ogImage" />
+    </Head>
 
     <PublicLayout :profile-name="t('blog.title')">
         <article>
@@ -99,7 +141,7 @@ function readingTime(body) {
             <div class="mx-auto max-w-3xl px-6 py-12">
                 <div
                     class="reveal prose-blog text-base leading-7 text-black/85 dark:text-white/85"
-                    v-html="tr(post.body)"
+                    v-html="sanitizedBody"
                 ></div>
             </div>
         </article>

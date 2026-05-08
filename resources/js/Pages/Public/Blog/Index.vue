@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { useScrollReveal } from '@/Composables/useScrollReveal';
+import { useTranslatable } from '@/Composables/useTranslatable';
 
 const props = defineProps({
     posts: {
@@ -12,18 +13,17 @@ const props = defineProps({
     },
 });
 
-const { t, tm, locale } = useI18n();
+const { t, tm } = useI18n();
+const { tr } = useTranslatable();
 useScrollReveal('.reveal');
 
-function tr(field) {
-    if (field == null) return '';
-    if (typeof field === 'object') {
-        return field[locale.value] || field.pt || field.en || '';
-    }
-    return field;
-}
-
 const items = computed(() => props.posts.data ?? []);
+
+const ogTitle = computed(() => t('blog.title'));
+const ogDescription = computed(() => t('meta.blogIndexDescription'));
+const canonicalUrl = computed(() =>
+    typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
+);
 
 const projectImage = (path) => (path ? '/storage/' + path : null);
 
@@ -42,7 +42,17 @@ function readingTime(body) {
 </script>
 
 <template>
-    <Head :title="t('blog.title')" />
+    <Head :title="ogTitle">
+        <meta name="description" :content="ogDescription" />
+        <link v-if="canonicalUrl" rel="canonical" :href="canonicalUrl" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" :content="ogTitle" />
+        <meta property="og:description" :content="ogDescription" />
+        <meta v-if="canonicalUrl" property="og:url" :content="canonicalUrl" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" :content="ogTitle" />
+        <meta name="twitter:description" :content="ogDescription" />
+    </Head>
 
     <PublicLayout :profile-name="t('blog.title')">
         <!-- Header -->
@@ -115,20 +125,30 @@ function readingTime(body) {
                 </div>
 
                 <!-- Pagination -->
-                <nav v-if="items.length && posts.last_page > 1" class="reveal mt-16 flex items-center justify-center gap-2">
-                    <Link
-                        v-for="link in posts.links"
-                        :key="link.label"
-                        :href="link.url ?? '#'"
-                        v-html="link.label"
-                        class="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-bold transition-all"
-                        :class="link.active
-                            ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
-                            : link.url
-                                ? 'border-black/15 bg-white hover:border-black dark:border-white/15 dark:bg-black dark:hover:border-white'
-                                : 'border-black/5 bg-white/50 text-black/30 cursor-not-allowed dark:border-white/5 dark:bg-black/50 dark:text-white/30'"
-                        :preserve-scroll="true"
-                    />
+                <nav
+                    v-if="items.length && posts.last_page > 1"
+                    class="reveal mt-16 flex items-center justify-center gap-2"
+                    aria-label="Paginação"
+                >
+                    <template v-for="link in posts.links" :key="link.label">
+                        <Link
+                            v-if="link.url"
+                            :href="link.url"
+                            v-html="link.label"
+                            class="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-bold transition-all"
+                            :class="link.active
+                                ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                                : 'border-black/15 bg-white hover:border-black dark:border-white/15 dark:bg-black dark:hover:border-white'"
+                            :preserve-scroll="true"
+                            :aria-current="link.active ? 'page' : undefined"
+                        />
+                        <span
+                            v-else
+                            v-html="link.label"
+                            class="inline-flex cursor-not-allowed items-center justify-center rounded-full border border-black/5 bg-white/50 px-4 py-2 text-sm font-bold text-black/30 dark:border-white/5 dark:bg-black/50 dark:text-white/30"
+                            aria-disabled="true"
+                        />
+                    </template>
                 </nav>
             </div>
         </section>

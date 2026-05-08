@@ -1,14 +1,18 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useTranslatable } from '@/Composables/useTranslatable';
 
-defineProps({
+const props = defineProps({
     posts: {
-        type: Array,
+        type: Object,
         required: true,
     },
 });
+
+const { tr } = useTranslatable();
+const items = computed(() => props.posts.data ?? []);
 
 const deleteForm = useForm({});
 const confirmingDeleteId = ref(null);
@@ -21,11 +25,6 @@ const destroy = (slug) => {
         preserveScroll: true,
         onFinish: () => (confirmingDeleteId.value = null),
     });
-};
-
-const tr = (val) => {
-    if (val && typeof val === 'object') return val.pt || val.en || '';
-    return val || '';
 };
 
 const imageSrc = (path) => (path ? '/storage/' + path : null);
@@ -57,7 +56,7 @@ const formatDate = (iso) => {
 
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm rounded-2xl border border-slate-100 overflow-hidden">
-                <div v-if="posts.length === 0" class="px-6 py-16 text-center">
+                <div v-if="items.length === 0" class="px-6 py-16 text-center">
                     <div class="mx-auto w-14 h-14 rounded-2xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center mb-4">
                         <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
@@ -71,7 +70,7 @@ const formatDate = (iso) => {
                 </div>
 
                 <ul v-else class="divide-y divide-slate-100">
-                    <li v-for="post in posts" :key="post.id" class="flex items-start gap-4 px-6 py-5 hover:bg-slate-50 transition-colors">
+                    <li v-for="post in items" :key="post.id" class="flex items-start gap-4 px-6 py-5 hover:bg-slate-50 transition-colors">
                         <!-- Cover -->
                         <div class="w-24 h-20 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-slate-200">
                             <img v-if="post.image_path" :src="imageSrc(post.image_path)" :alt="tr(post.title)" class="w-full h-full object-cover" />
@@ -141,6 +140,32 @@ const formatDate = (iso) => {
                         </div>
                     </li>
                 </ul>
+
+                <nav
+                    v-if="items.length && posts.last_page > 1"
+                    class="flex items-center justify-center gap-2 border-t border-slate-100 px-6 py-5"
+                    aria-label="Paginação"
+                >
+                    <template v-for="link in posts.links" :key="link.label">
+                        <Link
+                            v-if="link.url"
+                            :href="link.url"
+                            v-html="link.label"
+                            class="inline-flex items-center justify-center rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors"
+                            :class="link.active
+                                ? 'border-indigo-600 bg-indigo-600 text-white'
+                                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+                            :preserve-scroll="true"
+                            :aria-current="link.active ? 'page' : undefined"
+                        />
+                        <span
+                            v-else
+                            v-html="link.label"
+                            class="inline-flex cursor-not-allowed items-center justify-center rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-400"
+                            aria-disabled="true"
+                        />
+                    </template>
+                </nav>
             </div>
         </div>
     </AuthenticatedLayout>

@@ -10,6 +10,21 @@
     body {
         @apply antialiased;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }
 
 @layer utilities {
@@ -22,6 +37,13 @@
     .reveal.is-visible {
         opacity: 1;
         transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal {
+            opacity: 1;
+            transform: none;
+        }
     }
 
     .reveal-delay-1 { transition-delay: 0.1s; }

@@ -1,0 +1,32 @@
+name: Dependency Audit
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # toda segunda às 03:00 UTC (PLANEJAMENTO seção 8.6)
+  workflow_dispatch:
+
+jobs:
+  composer-audit:
+    name: composer audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+
+      - run: composer audit --no-interaction
+
+  npm-audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm audit --audit-level=high
