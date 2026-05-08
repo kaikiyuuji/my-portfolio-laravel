@@ -44,7 +44,7 @@ services:
     networks:
       - portfolio
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/up"]
+      test: ["CMD", "wget", "-qO-", "--no-check-certificate", "https://localhost/up"]
       interval: 30s
       timeout: 5s
       retries: 3
