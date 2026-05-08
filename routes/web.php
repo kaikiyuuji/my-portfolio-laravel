@@ -12,7 +12,6 @@ use App\Http\Controllers\Public\PortfolioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 // Public landing page
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
 

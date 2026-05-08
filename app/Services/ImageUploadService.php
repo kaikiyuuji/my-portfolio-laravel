@@ -32,7 +32,7 @@ class ImageUploadService
      */
     public function url(?string $path): ?string
     {
-        if (!$path) {
+        if (! $path) {
             return null;
         }
 

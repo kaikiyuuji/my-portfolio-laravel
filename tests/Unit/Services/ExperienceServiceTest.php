@@ -13,7 +13,7 @@ class ExperienceServiceTest extends TestCase
 
     private function makeService(): ExperienceService
     {
-        return new ExperienceService();
+        return new ExperienceService;
     }
 
     private function createExperience(array $overrides = []): Experience

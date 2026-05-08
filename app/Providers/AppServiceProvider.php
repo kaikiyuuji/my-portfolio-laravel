@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Rate limit login attempts: 5 per minute, keyed by email + IP.
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = str($request->input('email', ''))->lower() . '|' . $request->ip();
+            $throttleKey = str($request->input('email', ''))->lower().'|'.$request->ip();
 
             return Limit::perMinute(5)->by($throttleKey);
         });
