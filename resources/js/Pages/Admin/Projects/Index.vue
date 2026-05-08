@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import axios from 'axios';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -42,12 +43,9 @@ const moveDown = (index) => {
     persistOrder(ordered.map((p) => p.id));
 };
 
-const persistOrder = (orderedIds) => {
-    router.put(
-        route('admin.projects.reorder'),
-        { ordered_ids: orderedIds },
-        { preserveScroll: true }
-    );
+const persistOrder = async (orderedIds) => {
+    await axios.put(route('admin.projects.reorder'), { ordered_ids: orderedIds });
+    router.reload({ only: ['projects'], preserveScroll: true });
 };
 
 const imageSrc = (path) => (path ? '/storage/' + path : null);
