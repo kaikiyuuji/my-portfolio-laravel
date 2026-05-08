@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ExperienceController as AdminExperienceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\SocialLinkController as AdminSocialLinkController;
 use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -47,6 +48,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('projects', AdminProjectController::class)
         ->except(['show'])
         ->names('admin.projects');
+
+    // Social Links. Reorder must precede the resource.
+    Route::put('/social-links/reorder', [AdminSocialLinkController::class, 'reorder'])->name('admin.social-links.reorder');
+    Route::resource('social-links', AdminSocialLinkController::class)
+        ->except(['show'])
+        ->names('admin.social-links');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

@@ -31,7 +31,7 @@ import { Head, Link } from '@inertiajs/vue3';
             </div>
 
             <!-- Quick Actions Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                 <!-- Profile -->
                 <Link :href="route('admin.profile.edit')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
                     <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
@@ -66,6 +66,15 @@ import { Head, Link } from '@inertiajs/vue3';
                     </div>
                     <h4 class="font-bold text-slate-800 text-lg group-hover:text-rose-600 transition-colors">Projetos</h4>
                     <p class="text-slate-500 mt-1 text-sm">Cards do portfolio com tecnologias e demos.</p>
+                </Link>
+
+                <!-- Social Links -->
+                <Link :href="route('admin.social-links.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
+                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-sky-600 group-hover:text-white transition-all shadow-sm">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-sky-600 transition-colors">Redes Sociais</h4>
+                    <p class="text-slate-500 mt-1 text-sm">GitHub, LinkedIn e outros perfis.</p>
                 </Link>
             </div>
         </div>
