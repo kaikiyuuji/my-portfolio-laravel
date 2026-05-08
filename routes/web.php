@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // Portfolio Profile (Profile model — NOT User model)
     Route::get('/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+
+    // Stacks (technologies). Reorder must be defined BEFORE the resource
+    // so /admin/stacks/reorder doesn't get captured by the {stack} param.
+    Route::put('/stacks/reorder', [AdminStackController::class, 'reorder'])->name('admin.stacks.reorder');
+    Route::resource('stacks', AdminStackController::class)
+        ->except(['show'])
+        ->names('admin.stacks');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

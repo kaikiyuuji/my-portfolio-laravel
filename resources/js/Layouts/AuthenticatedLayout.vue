@@ -33,6 +33,9 @@ const page = usePage();
                             <NavLink :href="route('admin.profile.edit')" :active="route().current('admin.profile.*')">
                                 Portfolio Público
                             </NavLink>
+                            <NavLink :href="route('admin.stacks.index')" :active="route().current('admin.stacks.*')">
+                                Tecnologias
+                            </NavLink>
                         </div>
                     </div>
 
@@ -85,6 +88,9 @@ const page = usePage();
                     </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('admin.profile.edit')" :active="route().current('admin.profile.*')">
                         Portfolio Público
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('admin.stacks.index')" :active="route().current('admin.stacks.*')">
+                        Tecnologias
                     </ResponsiveNavLink>
                 </div>
                 <div class="pt-4 pb-1 border-t border-slate-200">
