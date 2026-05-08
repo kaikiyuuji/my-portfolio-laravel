@@ -16,8 +16,8 @@ const confirmingDeleteId = ref(null);
 const confirmDelete = (id) => (confirmingDeleteId.value = id);
 const cancelDelete = () => (confirmingDeleteId.value = null);
 
-const destroy = (id) => {
-    deleteForm.delete(route('admin.posts.destroy', id), {
+const destroy = (slug) => {
+    deleteForm.delete(route('admin.posts.destroy', slug), {
         preserveScroll: true,
         onFinish: () => (confirmingDeleteId.value = null),
     });
@@ -107,7 +107,7 @@ const formatDate = (iso) => {
                         <!-- Actions -->
                         <div class="flex items-center gap-2 shrink-0">
                             <Link
-                                :href="route('admin.posts.edit', post.id)"
+                                :href="route('admin.posts.edit', post.slug)"
                                 class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-colors"
                             >
                                 Editar
@@ -123,7 +123,7 @@ const formatDate = (iso) => {
                                 </button>
                                 <button
                                     type="button"
-                                    @click="destroy(post.id)"
+                                    @click="destroy(post.slug)"
                                     :disabled="deleteForm.processing"
                                     class="rounded-lg px-3 py-1.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-60"
                                 >

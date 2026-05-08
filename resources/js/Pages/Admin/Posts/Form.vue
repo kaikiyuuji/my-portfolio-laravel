@@ -52,7 +52,7 @@ const triggerFileInput = () => fileInput.value.click();
 
 const submit = () => {
     if (isEditing.value) {
-        form.post(route('admin.posts.update', props.post.id), {
+        form.post(route('admin.posts.update', props.post.slug), {
             preserveScroll: true,
             forceFormData: true,
         });
