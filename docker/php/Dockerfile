@@ -42,7 +42,7 @@ RUN npm run build
 # =============================================================
 # Estágio 3 — Imagem final PHP-FPM
 # =============================================================
-FROM php:8.2-fpm-alpine AS app
+FROM php:8.4-fpm-alpine AS app
 
 ENV COMPOSER_ALLOW_SUPERUSER=1 \
     PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
