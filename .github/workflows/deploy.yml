@@ -65,9 +65,7 @@ jobs:
     name: SSH deploy to Droplet
     runs-on: ubuntu-latest
     needs: docker-build
-    environment:
-      name: production
-      url: https://${{ secrets.PRODUCTION_HOST }}
+    environment: production
     steps:
       - name: Configure SSH
         run: |
