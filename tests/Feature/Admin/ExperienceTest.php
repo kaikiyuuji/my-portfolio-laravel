@@ -14,9 +14,9 @@ class ExperienceTest extends TestCase
     private function createExperience(array $overrides = []): Experience
     {
         return Experience::create(array_merge([
-            'company' => 'Acme Corp',
-            'role' => 'Backend Developer',
-            'description' => 'Built APIs and microservices.',
+            'company' => ['pt' => 'Acme Corp'],
+            'role' => ['pt' => 'Backend Developer'],
+            'description' => ['pt' => 'Built APIs and microservices.'],
             'start_date' => '2023-01-01',
             'end_date' => '2024-06-30',
             'order' => 1,
@@ -59,9 +59,9 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Google',
-            'role' => 'Software Engineer',
-            'description' => 'Worked on search infrastructure.',
+            'company' => ['pt' => 'Google'],
+            'role' => ['pt' => 'Software Engineer'],
+            'description' => ['pt' => 'Worked on search infrastructure.'],
             'start_date' => '2022-03-01',
             'end_date' => '2024-12-31',
             'order' => 1,
@@ -69,7 +69,7 @@ class ExperienceTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
-        $this->assertDatabaseHas('experiences', ['company' => 'Google', 'role' => 'Software Engineer']);
+        $this->assertDatabaseHas('experiences', ['company->pt' => 'Google', 'role->pt' => 'Software Engineer']);
     }
 
     public function test_experience_requires_company(): void
@@ -77,12 +77,12 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => '',
-            'role' => 'Developer',
+            'company' => ['pt' => ''],
+            'role' => ['pt' => 'Developer'],
             'start_date' => '2023-01-01',
         ]);
 
-        $response->assertSessionHasErrors('company');
+        $response->assertSessionHasErrors('company.pt');
     }
 
     public function test_experience_requires_role(): void
@@ -90,12 +90,12 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Acme',
-            'role' => '',
+            'company' => ['pt' => 'Acme'],
+            'role' => ['pt' => ''],
             'start_date' => '2023-01-01',
         ]);
 
-        $response->assertSessionHasErrors('role');
+        $response->assertSessionHasErrors('role.pt');
     }
 
     public function test_experience_requires_start_date(): void
@@ -103,8 +103,8 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Acme',
-            'role' => 'Developer',
+            'company' => ['pt' => 'Acme'],
+            'role' => ['pt' => 'Developer'],
             'start_date' => '',
         ]);
 
@@ -116,8 +116,8 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Acme',
-            'role' => 'Developer',
+            'company' => ['pt' => 'Acme'],
+            'role' => ['pt' => 'Developer'],
             'start_date' => '2024-01-01',
             'end_date' => '2023-01-01',
         ]);
@@ -130,9 +130,9 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Current Corp',
-            'role' => 'Lead Developer',
-            'description' => 'Leading the team.',
+            'company' => ['pt' => 'Current Corp'],
+            'role' => ['pt' => 'Lead Developer'],
+            'description' => ['pt' => 'Leading the team.'],
             'start_date' => '2024-01-01',
             'end_date' => null,
             'order' => 1,
@@ -140,7 +140,7 @@ class ExperienceTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('experiences', [
-            'company' => 'Current Corp',
+            'company->pt' => 'Current Corp',
             'end_date' => null,
         ]);
     }
@@ -166,9 +166,9 @@ class ExperienceTest extends TestCase
         $exp = $this->createExperience();
 
         $response = $this->actingAs($user)->put("/admin/experiences/{$exp->id}", [
-            'company' => 'Updated Corp',
-            'role' => 'Senior Developer',
-            'description' => 'New description.',
+            'company' => ['pt' => 'Updated Corp'],
+            'role' => ['pt' => 'Senior Developer'],
+            'description' => ['pt' => 'New description.'],
             'start_date' => '2023-01-01',
             'end_date' => '2025-01-01',
             'order' => 1,
@@ -176,7 +176,7 @@ class ExperienceTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
-        $this->assertDatabaseHas('experiences', ['id' => $exp->id, 'company' => 'Updated Corp']);
+        $this->assertDatabaseHas('experiences', ['id' => $exp->id, 'company->pt' => 'Updated Corp']);
     }
 
     // ─── Destroy ──────────────────────────────────────────────────
@@ -206,14 +206,14 @@ class ExperienceTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/experiences', [
-            'company' => 'Minimal Corp',
-            'role' => 'Intern',
+            'company' => ['pt' => 'Minimal Corp'],
+            'role' => ['pt' => 'Intern'],
             'start_date' => '2023-06-01',
             'end_date' => '2023-12-31',
             'order' => 1,
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('experiences', ['company' => 'Minimal Corp', 'description' => null]);
+        $this->assertDatabaseHas('experiences', ['company->pt' => 'Minimal Corp']);
     }
 }

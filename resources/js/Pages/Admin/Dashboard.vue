@@ -31,7 +31,7 @@ import { Head, Link } from '@inertiajs/vue3';
             </div>
 
             <!-- Quick Actions Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
                 <!-- Profile -->
                 <Link :href="route('admin.profile.edit')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
                     <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
@@ -75,6 +75,15 @@ import { Head, Link } from '@inertiajs/vue3';
                     </div>
                     <h4 class="font-bold text-slate-800 text-lg group-hover:text-sky-600 transition-colors">Redes Sociais</h4>
                     <p class="text-slate-500 mt-1 text-sm">GitHub, LinkedIn e outros perfis.</p>
+                </Link>
+
+                <!-- Blog -->
+                <Link :href="route('admin.posts.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
+                    <div class="w-12 h-12 bg-fuchsia-50 text-fuchsia-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-fuchsia-600 group-hover:text-white transition-all shadow-sm">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-fuchsia-600 transition-colors">Blog</h4>
+                    <p class="text-slate-500 mt-1 text-sm">Posts e artigos publicados.</p>
                 </Link>
             </div>
         </div>

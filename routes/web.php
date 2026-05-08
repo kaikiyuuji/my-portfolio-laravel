@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\ExperienceController as AdminExperienceController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\SocialLinkController as AdminSocialLinkController;
 use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\PortfolioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,6 +15,10 @@ use Inertia\Inertia;
 
 // Public landing page
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
+
+// Public blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // ─── Admin Routes (protected by auth middleware) ──────────────
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
@@ -49,6 +55,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('social-links', AdminSocialLinkController::class)
         ->except(['show'])
         ->names('admin.social-links');
+
+    // Blog Posts (CRUD only — public listing/detail handled by BlogController).
+    Route::resource('posts', AdminPostController::class)
+        ->except(['show'])
+        ->names('admin.posts');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

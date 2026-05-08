@@ -17,8 +17,8 @@ class ProjectTest extends TestCase
     private function createProject(array $overrides = []): Project
     {
         return Project::create(array_merge([
-            'title' => 'Portfolio Website',
-            'description' => 'My personal portfolio built with Laravel.',
+            'title' => ['pt' => 'Portfolio Website'],
+            'description' => ['pt' => 'My personal portfolio built with Laravel.'],
             'image_path' => null,
             'repository_url' => 'https://github.com/user/portfolio',
             'demo_url' => 'https://example.com',
@@ -74,8 +74,8 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'New Project',
-            'description' => 'A new amazing project.',
+            'title' => ['pt' => 'New Project'],
+            'description' => ['pt' => 'A new amazing project.'],
             'repository_url' => 'https://github.com/user/new-project',
             'demo_url' => 'https://newproject.com',
             'order' => 1,
@@ -85,7 +85,7 @@ class ProjectTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
-        $this->assertDatabaseHas('projects', ['title' => 'New Project']);
+        $this->assertDatabaseHas('projects', ['title->pt' => 'New Project']);
     }
 
     public function test_project_creation_requires_title(): void
@@ -93,11 +93,11 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => '',
-            'description' => 'Some description.',
+            'title' => ['pt' => ''],
+            'description' => ['pt' => 'Some description.'],
         ]);
 
-        $response->assertSessionHasErrors('title');
+        $response->assertSessionHasErrors('title.pt');
     }
 
     public function test_project_creation_requires_description(): void
@@ -105,11 +105,11 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'My Project',
-            'description' => '',
+            'title' => ['pt' => 'My Project'],
+            'description' => ['pt' => ''],
         ]);
 
-        $response->assertSessionHasErrors('description');
+        $response->assertSessionHasErrors('description.pt');
     }
 
     public function test_project_can_be_created_with_stacks(): void
@@ -119,8 +119,8 @@ class ProjectTest extends TestCase
         $s2 = $this->createStack(['name' => 'Vue', 'icon_slug' => 'vuedotjs', 'order' => 2]);
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'Full Stack App',
-            'description' => 'Built with Laravel and Vue.',
+            'title' => ['pt' => 'Full Stack App'],
+            'description' => ['pt' => 'Built with Laravel and Vue.'],
             'order' => 1,
             'is_featured' => true,
             'stack_ids' => [$s1->id, $s2->id],
@@ -128,7 +128,7 @@ class ProjectTest extends TestCase
 
         $response->assertSessionHasNoErrors();
 
-        $project = Project::where('title', 'Full Stack App')->first();
+        $project = Project::where('title->pt', 'Full Stack App')->first();
         $this->assertNotNull($project);
         $this->assertCount(2, $project->stacks);
     }
@@ -138,8 +138,8 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'Test',
-            'description' => 'Test desc.',
+            'title' => ['pt' => 'Test'],
+            'description' => ['pt' => 'Test desc.'],
             'repository_url' => 'not-a-url',
         ]);
 
@@ -151,8 +151,8 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'Test',
-            'description' => 'Test desc.',
+            'title' => ['pt' => 'Test'],
+            'description' => ['pt' => 'Test desc.'],
             'demo_url' => 'invalid',
         ]);
 
@@ -164,15 +164,15 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'No Demo',
-            'description' => 'Project without demo.',
+            'title' => ['pt' => 'No Demo'],
+            'description' => ['pt' => 'Project without demo.'],
             'order' => 1,
             'is_featured' => false,
             'stack_ids' => [],
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('projects', ['title' => 'No Demo', 'demo_url' => null]);
+        $this->assertDatabaseHas('projects', ['title->pt' => 'No Demo', 'demo_url' => null]);
     }
 
     // ─── Image Upload ─────────────────────────────────────────────
@@ -183,8 +183,8 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'With Image',
-            'description' => 'Project with an image.',
+            'title' => ['pt' => 'With Image'],
+            'description' => ['pt' => 'Project with an image.'],
             'order' => 1,
             'is_featured' => false,
             'stack_ids' => [],
@@ -193,7 +193,7 @@ class ProjectTest extends TestCase
 
         $response->assertSessionHasNoErrors();
 
-        $project = Project::where('title', 'With Image')->first();
+        $project = Project::where('title->pt', 'With Image')->first();
         $this->assertNotNull($project->image_path);
     }
 
@@ -203,8 +203,8 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'title' => 'Bad Image',
-            'description' => 'Should fail.',
+            'title' => ['pt' => 'Bad Image'],
+            'description' => ['pt' => 'Should fail.'],
             'order' => 1,
             'stack_ids' => [],
             'image' => UploadedFile::fake()->create('doc.pdf', 1024, 'application/pdf'),
@@ -234,8 +234,8 @@ class ProjectTest extends TestCase
         $project = $this->createProject();
 
         $response = $this->actingAs($user)->put("/admin/projects/{$project->id}", [
-            'title' => 'Updated Title',
-            'description' => 'Updated description.',
+            'title' => ['pt' => 'Updated Title'],
+            'description' => ['pt' => 'Updated description.'],
             'repository_url' => 'https://github.com/user/updated',
             'order' => 1,
             'is_featured' => true,
@@ -243,7 +243,7 @@ class ProjectTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('projects', ['id' => $project->id, 'title' => 'Updated Title']);
+        $this->assertDatabaseHas('projects', ['id' => $project->id, 'title->pt' => 'Updated Title']);
     }
 
     public function test_admin_can_sync_project_stacks_on_update(): void
@@ -256,8 +256,8 @@ class ProjectTest extends TestCase
         $s2 = $this->createStack(['name' => 'MySQL', 'icon_slug' => 'mysql', 'order' => 2]);
 
         $response = $this->actingAs($user)->put("/admin/projects/{$project->id}", [
-            'title' => $project->title,
-            'description' => $project->description,
+            'title' => $project->getTranslations('title'),
+            'description' => $project->getTranslations('description'),
             'order' => 1,
             'is_featured' => true,
             'stack_ids' => [$s2->id],
@@ -312,8 +312,8 @@ class ProjectTest extends TestCase
     public function test_admin_can_reorder_projects(): void
     {
         $user = User::factory()->create();
-        $a = $this->createProject(['title' => 'A', 'order' => 1]);
-        $b = $this->createProject(['title' => 'B', 'order' => 2]);
+        $a = $this->createProject(['title' => ['pt' => 'A'], 'order' => 1]);
+        $b = $this->createProject(['title' => ['pt' => 'B'], 'order' => 2]);
 
         $response = $this->actingAs($user)->put('/admin/projects/reorder', [
             'ordered_ids' => [$b->id, $a->id],

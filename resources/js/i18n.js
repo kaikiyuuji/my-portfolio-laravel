@@ -10,6 +10,16 @@ const messages = {
             experience: 'Experiência',
             projects: 'Projetos',
             contact: 'Contato',
+            blog: 'Blog',
+        },
+        blog: {
+            label: 'Artigos',
+            title: 'Blog',
+            subtitle: 'Anotações sobre engenharia, produto e o caminho do desenvolvimento.',
+            empty: 'Nenhum post publicado ainda.',
+            readMore: 'Ler post',
+            backToList: 'Todos os posts',
+            related: 'Posts relacionados',
         },
         hero: {
             available: 'Disponível para novos projetos',
@@ -61,6 +71,16 @@ const messages = {
             experience: 'Experience',
             projects: 'Projects',
             contact: 'Contact',
+            blog: 'Blog',
+        },
+        blog: {
+            label: 'Articles',
+            title: 'Blog',
+            subtitle: 'Notes on engineering, product and the path of development.',
+            empty: 'No published posts yet.',
+            readMore: 'Read post',
+            backToList: 'All posts',
+            related: 'Related posts',
         },
         hero: {
             available: 'Available for new projects',

@@ -45,6 +45,9 @@ const page = usePage();
                             <NavLink :href="route('admin.social-links.index')" :active="route().current('admin.social-links.*')">
                                 Redes Sociais
                             </NavLink>
+                            <NavLink :href="route('admin.posts.index')" :active="route().current('admin.posts.*')">
+                                Blog
+                            </NavLink>
                         </div>
                     </div>
 
@@ -109,6 +112,9 @@ const page = usePage();
                     </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('admin.social-links.index')" :active="route().current('admin.social-links.*')">
                         Redes Sociais
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('admin.posts.index')" :active="route().current('admin.posts.*')">
+                        Blog
                     </ResponsiveNavLink>
                 </div>
                 <div class="pt-4 pb-1 border-t border-slate-200">

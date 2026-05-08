@@ -19,9 +19,9 @@ class ExperienceServiceTest extends TestCase
     private function createExperience(array $overrides = []): Experience
     {
         return Experience::create(array_merge([
-            'company' => 'Acme Corp',
-            'role' => 'Developer',
-            'description' => 'Built APIs.',
+            'company' => ['pt' => 'Acme Corp'],
+            'role' => ['pt' => 'Developer'],
+            'description' => ['pt' => 'Built APIs.'],
             'start_date' => '2023-01-01',
             'end_date' => '2024-06-30',
             'order' => 1,
@@ -32,14 +32,14 @@ class ExperienceServiceTest extends TestCase
 
     public function test_all_returns_experiences_ordered_by_start_date_desc(): void
     {
-        $this->createExperience(['company' => 'Old', 'start_date' => '2020-01-01', 'order' => 2]);
-        $this->createExperience(['company' => 'New', 'start_date' => '2024-01-01', 'order' => 1]);
+        $this->createExperience(['company' => ['pt' => 'Old'], 'start_date' => '2020-01-01', 'order' => 2]);
+        $this->createExperience(['company' => ['pt' => 'New'], 'start_date' => '2024-01-01', 'order' => 1]);
 
         $service = $this->makeService();
         $result = $service->all();
 
-        $this->assertEquals('New', $result->first()->company);
-        $this->assertEquals('Old', $result->last()->company);
+        $this->assertEquals('New', $result->first()->getTranslation('company', 'pt'));
+        $this->assertEquals('Old', $result->last()->getTranslation('company', 'pt'));
     }
 
     // ─── store() ──────────────────────────────────────────────────
@@ -48,16 +48,16 @@ class ExperienceServiceTest extends TestCase
     {
         $service = $this->makeService();
         $exp = $service->store([
-            'company' => 'Google',
-            'role' => 'SWE',
-            'description' => 'Search infra.',
+            'company' => ['pt' => 'Google'],
+            'role' => ['pt' => 'SWE'],
+            'description' => ['pt' => 'Search infra.'],
             'start_date' => '2022-03-01',
             'end_date' => null,
             'order' => 1,
         ]);
 
         $this->assertInstanceOf(Experience::class, $exp);
-        $this->assertDatabaseHas('experiences', ['company' => 'Google']);
+        $this->assertDatabaseHas('experiences', ['company->pt' => 'Google']);
     }
 
     // ─── update() ─────────────────────────────────────────────────
@@ -68,13 +68,13 @@ class ExperienceServiceTest extends TestCase
 
         $service = $this->makeService();
         $result = $service->update($exp, [
-            'company' => 'Updated Corp',
-            'role' => 'Senior',
+            'company' => ['pt' => 'Updated Corp'],
+            'role' => ['pt' => 'Senior'],
             'start_date' => '2023-01-01',
         ]);
 
-        $this->assertEquals('Updated Corp', $result->company);
-        $this->assertDatabaseHas('experiences', ['id' => $exp->id, 'company' => 'Updated Corp']);
+        $this->assertEquals('Updated Corp', $result->getTranslation('company', 'pt'));
+        $this->assertDatabaseHas('experiences', ['id' => $exp->id, 'company->pt' => 'Updated Corp']);
     }
 
     // ─── destroy() ────────────────────────────────────────────────

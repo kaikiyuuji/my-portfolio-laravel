@@ -26,8 +26,8 @@ class ProjectServiceTest extends TestCase
     private function createProject(array $overrides = []): Project
     {
         return Project::create(array_merge([
-            'title' => 'Portfolio',
-            'description' => 'My portfolio.',
+            'title' => ['pt' => 'Portfolio'],
+            'description' => ['pt' => 'My portfolio.'],
             'order' => 1,
             'is_featured' => true,
         ], $overrides));
@@ -68,14 +68,14 @@ class ProjectServiceTest extends TestCase
 
         $service = $this->makeService();
         $project = $service->store([
-            'title' => 'New App',
-            'description' => 'Built with PHP and Vue.',
+            'title' => ['pt' => 'New App'],
+            'description' => ['pt' => 'Built with PHP and Vue.'],
             'order' => 1,
             'is_featured' => true,
         ], [$s1->id, $s2->id]);
 
         $this->assertInstanceOf(Project::class, $project);
-        $this->assertDatabaseHas('projects', ['title' => 'New App']);
+        $this->assertDatabaseHas('projects', ['title->pt' => 'New App']);
         $this->assertCount(2, $project->stacks);
     }
 
@@ -83,13 +83,13 @@ class ProjectServiceTest extends TestCase
     {
         $service = $this->makeService();
         $project = $service->store([
-            'title' => 'Solo Project',
-            'description' => 'No stacks.',
+            'title' => ['pt' => 'Solo Project'],
+            'description' => ['pt' => 'No stacks.'],
             'order' => 1,
             'is_featured' => false,
         ], []);
 
-        $this->assertDatabaseHas('projects', ['title' => 'Solo Project']);
+        $this->assertDatabaseHas('projects', ['title->pt' => 'Solo Project']);
         $this->assertCount(0, $project->stacks);
     }
 
@@ -105,11 +105,11 @@ class ProjectServiceTest extends TestCase
 
         $service = $this->makeService();
         $result = $service->update($project, [
-            'title' => 'Updated',
-            'description' => 'Updated desc.',
+            'title' => ['pt' => 'Updated'],
+            'description' => ['pt' => 'Updated desc.'],
         ], [$s2->id]);
 
-        $this->assertEquals('Updated', $result->title);
+        $this->assertEquals('Updated', $result->getTranslation('title', 'pt'));
         $result->refresh();
         $this->assertCount(1, $result->stacks);
         $this->assertEquals($s2->id, $result->stacks->first()->id);
@@ -173,8 +173,8 @@ class ProjectServiceTest extends TestCase
 
     public function test_reorder_updates_order_column(): void
     {
-        $a = $this->createProject(['title' => 'A', 'order' => 1]);
-        $b = $this->createProject(['title' => 'B', 'order' => 2]);
+        $a = $this->createProject(['title' => ['pt' => 'A'], 'order' => 1]);
+        $b = $this->createProject(['title' => ['pt' => 'B'], 'order' => 2]);
 
         $service = $this->makeService();
         $service->reorder([$b->id, $a->id]);

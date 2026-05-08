@@ -17,11 +17,12 @@ const scrolled = ref(false);
 const mobileOpen = ref(false);
 
 const navItems = computed(() => [
-    { href: '#sobre', label: t('nav.about') },
-    { href: '#stacks', label: t('nav.stacks') },
-    { href: '#experiencia', label: t('nav.experience') },
-    { href: '#projetos', label: t('nav.projects') },
-    { href: '#contato', label: t('nav.contact') },
+    { href: '/#sobre', label: t('nav.about') },
+    { href: '/#stacks', label: t('nav.stacks') },
+    { href: '/#experiencia', label: t('nav.experience') },
+    { href: '/#projetos', label: t('nav.projects') },
+    { href: '/blog', label: t('nav.blog') },
+    { href: '/#contato', label: t('nav.contact') },
 ]);
 
 function handleScroll() {

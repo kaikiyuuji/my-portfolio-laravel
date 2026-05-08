@@ -20,8 +20,8 @@ class PortfolioTest extends TestCase
     {
         Profile::create([
             'name' => 'Kaiki Hirata',
-            'headline' => 'Full Stack Developer',
-            'bio' => 'Building great software.',
+            'headline' => ['pt' => 'Full Stack Developer'],
+            'bio' => ['pt' => 'Building great software.'],
             'email' => 'kaiki@example.com',
         ]);
 
@@ -34,17 +34,17 @@ class PortfolioTest extends TestCase
         ]);
 
         Experience::create([
-            'company' => 'Acme Corp',
-            'role' => 'Developer',
-            'description' => 'Built systems.',
+            'company' => ['pt' => 'Acme Corp'],
+            'role' => ['pt' => 'Developer'],
+            'description' => ['pt' => 'Built systems.'],
             'start_date' => '2023-01-01',
             'end_date' => null,
             'order' => 1,
         ]);
 
-        $project = Project::create([
-            'title' => 'Portfolio',
-            'description' => 'My portfolio website.',
+        Project::create([
+            'title' => ['pt' => 'Portfolio'],
+            'description' => ['pt' => 'My portfolio website.'],
             'repository_url' => 'https://github.com/user/portfolio',
             'demo_url' => 'https://example.com',
             'order' => 1,
@@ -99,7 +99,7 @@ class PortfolioTest extends TestCase
         $response->assertInertia(fn ($page) => $page
             ->has('profile')
             ->where('profile.name', 'Kaiki Hirata')
-            ->where('profile.headline', 'Full Stack Developer')
+            ->where('profile.headline.pt', 'Full Stack Developer')
         );
     }
 
@@ -145,8 +145,8 @@ class PortfolioTest extends TestCase
     {
         Profile::create([
             'name' => 'Test',
-            'headline' => 'Dev',
-            'bio' => 'Bio',
+            'headline' => ['pt' => 'Dev'],
+            'bio' => ['pt' => 'Bio'],
             'email' => 'test@example.com',
         ]);
 
@@ -162,21 +162,21 @@ class PortfolioTest extends TestCase
     {
         Profile::create([
             'name' => 'Test',
-            'headline' => 'Dev',
-            'bio' => 'Bio',
+            'headline' => ['pt' => 'Dev'],
+            'bio' => ['pt' => 'Bio'],
             'email' => 'test@example.com',
         ]);
 
         Project::create([
-            'title' => 'Featured Project',
-            'description' => 'Visible.',
+            'title' => ['pt' => 'Featured Project'],
+            'description' => ['pt' => 'Visible.'],
             'order' => 1,
             'is_featured' => true,
         ]);
 
         Project::create([
-            'title' => 'Hidden Project',
-            'description' => 'Not visible.',
+            'title' => ['pt' => 'Hidden Project'],
+            'description' => ['pt' => 'Not visible.'],
             'order' => 2,
             'is_featured' => false,
         ]);
@@ -203,8 +203,8 @@ class PortfolioTest extends TestCase
         $this->seedPortfolioData();
 
         Project::create([
-            'title' => 'No Demo',
-            'description' => 'No demo link.',
+            'title' => ['pt' => 'No Demo'],
+            'description' => ['pt' => 'No demo link.'],
             'order' => 2,
             'is_featured' => true,
             'demo_url' => null,
@@ -223,22 +223,22 @@ class PortfolioTest extends TestCase
     {
         Profile::create([
             'name' => 'Test',
-            'headline' => 'Dev',
-            'bio' => 'Bio',
+            'headline' => ['pt' => 'Dev'],
+            'bio' => ['pt' => 'Bio'],
             'email' => 'test@example.com',
         ]);
 
         Experience::create([
-            'company' => 'Old Corp',
-            'role' => 'Junior',
+            'company' => ['pt' => 'Old Corp'],
+            'role' => ['pt' => 'Junior'],
             'start_date' => '2020-01-01',
             'end_date' => '2021-12-31',
             'order' => 2,
         ]);
 
         Experience::create([
-            'company' => 'New Corp',
-            'role' => 'Senior',
+            'company' => ['pt' => 'New Corp'],
+            'role' => ['pt' => 'Senior'],
             'start_date' => '2024-01-01',
             'end_date' => null,
             'order' => 1,
@@ -248,8 +248,8 @@ class PortfolioTest extends TestCase
 
         $response->assertInertia(fn ($page) => $page
             ->has('experiences', 2)
-            ->where('experiences.0.company', 'New Corp')
-            ->where('experiences.1.company', 'Old Corp')
+            ->where('experiences.0.company.pt', 'New Corp')
+            ->where('experiences.1.company.pt', 'Old Corp')
         );
     }
 }

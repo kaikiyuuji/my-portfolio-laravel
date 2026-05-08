@@ -43,8 +43,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki Hirata',
-                'headline' => 'Full Stack Developer',
-                'bio' => 'Passionate developer building amazing things.',
+                'headline' => ['pt' => 'Full Stack Developer'],
+                'bio' => ['pt' => 'Passionate developer building amazing things.'],
                 'email' => 'kaiki@example.com',
                 'resume_url' => 'https://example.com/resume.pdf',
             ]);
@@ -54,7 +54,7 @@ class ProfileTest extends TestCase
 
         $this->assertDatabaseHas('profiles', [
             'name' => 'Kaiki Hirata',
-            'headline' => 'Full Stack Developer',
+            'headline->pt' => 'Full Stack Developer',
             'email' => 'kaiki@example.com',
         ]);
     }
@@ -67,8 +67,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => '',
-                'headline' => 'Developer',
-                'bio' => 'Some bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Some bio text.'],
                 'email' => 'kaiki@example.com',
             ]);
 
@@ -83,8 +83,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki',
-                'headline' => 'Developer',
-                'bio' => 'Some bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Some bio text.'],
                 'email' => 'not-a-valid-email',
             ]);
 
@@ -99,12 +99,12 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki',
-                'headline' => '',
-                'bio' => 'Some bio text.',
+                'headline' => ['pt' => ''],
+                'bio' => ['pt' => 'Some bio text.'],
                 'email' => 'kaiki@example.com',
             ]);
 
-        $response->assertSessionHasErrors('headline');
+        $response->assertSessionHasErrors('headline.pt');
     }
 
     // ─── Upload de Avatar ─────────────────────────────────────────
@@ -119,8 +119,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki Hirata',
-                'headline' => 'Developer',
-                'bio' => 'Bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Bio text.'],
                 'email' => 'kaiki@example.com',
                 'avatar' => UploadedFile::fake()->image('avatar.jpg', 400, 400),
             ]);
@@ -143,8 +143,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki Hirata',
-                'headline' => 'Developer',
-                'bio' => 'Bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Bio text.'],
                 'email' => 'kaiki@example.com',
                 'avatar' => UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf'),
             ]);
@@ -162,8 +162,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki Hirata',
-                'headline' => 'Developer',
-                'bio' => 'Bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Bio text.'],
                 'email' => 'kaiki@example.com',
                 'avatar' => UploadedFile::fake()->image('avatar.jpg')->size(5120), // 5MB
             ]);
@@ -181,8 +181,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki',
-                'headline' => 'Developer',
-                'bio' => 'Bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Bio text.'],
                 'email' => 'kaiki@example.com',
                 'resume_url' => 'not-a-valid-url',
             ]);
@@ -198,8 +198,8 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->put('/admin/profile', [
                 'name' => 'Kaiki',
-                'headline' => 'Developer',
-                'bio' => 'Bio text.',
+                'headline' => ['pt' => 'Developer'],
+                'bio' => ['pt' => 'Bio text.'],
                 'email' => 'kaiki@example.com',
                 'resume_url' => null,
             ]);
