@@ -13,12 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Factories use Faker (dev dep). Skip in production where vendor is --no-dev.
+        // Create the real admin user manually via `php artisan tinker` or a dedicated
+        // command — never seed predictable credentials in prod.
+        if (app()->environment('local', 'testing')) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
         $this->call([
             StackSeeder::class,
         ]);
