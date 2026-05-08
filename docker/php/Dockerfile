@@ -22,7 +22,7 @@ RUN composer install \
 # =============================================================
 # Estágio 2 — Build dos assets Vite (Node)
 # =============================================================
-FROM node:20-alpine AS frontend
+FROM node:26-alpine AS frontend
 
 WORKDIR /app
 
