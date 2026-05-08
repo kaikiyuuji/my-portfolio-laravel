@@ -1,25 +1,10 @@
 # syntax=docker/dockerfile:1.7
 
 # =============================================================
-# Estágio 1 — Build dos assets Vite (Node)
+# Estágio 1 — Vendor PHP (Composer, sem dev)
 # =============================================================
-FROM node:20-alpine AS frontend
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
-
-COPY resources ./resources
-COPY public ./public
-COPY vite.config.js postcss.config.js tailwind.config.js jsconfig.json ./
-
-RUN npm run build
-
-
-# =============================================================
-# Estágio 2 — Vendor PHP (Composer, sem dev)
-# =============================================================
+# Roda antes do frontend porque o app.js importa ZiggyVue de
+# vendor/tightenco/ziggy (pacote PHP que envia código JS junto).
 FROM composer:2 AS vendor
 
 WORKDIR /app
@@ -32,6 +17,26 @@ RUN composer install \
     --no-scripts \
     --prefer-dist \
     --optimize-autoloader
+
+
+# =============================================================
+# Estágio 2 — Build dos assets Vite (Node)
+# =============================================================
+FROM node:20-alpine AS frontend
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js postcss.config.js tailwind.config.js jsconfig.json ./
+
+# Ziggy é importado de vendor/tightenco/ziggy pelo app.js.
+COPY --from=vendor /app/vendor/tightenco/ziggy ./vendor/tightenco/ziggy
+
+RUN npm run build
 
 
 # =============================================================
