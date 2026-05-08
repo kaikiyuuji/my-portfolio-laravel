@@ -35,6 +35,11 @@ const formatPeriod = (start, end) => {
     const endStr = new Date(end).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
     return `${startStr} — ${endStr}`;
 };
+
+const tr = (val) => {
+    if (val && typeof val === 'object') return val.pt || val.en || '';
+    return val || '';
+};
 </script>
 
 <template>
@@ -94,9 +99,9 @@ const formatPeriod = (start, end) => {
                         <!-- Info -->
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <p class="text-sm font-semibold text-slate-900">{{ experience.role }}</p>
+                                <p class="text-sm font-semibold text-slate-900">{{ tr(experience.role) }}</p>
                                 <span class="text-slate-400">·</span>
-                                <p class="text-sm font-medium text-indigo-600">{{ experience.company }}</p>
+                                <p class="text-sm font-medium text-indigo-600">{{ tr(experience.company) }}</p>
                                 <span
                                     v-if="!experience.end_date"
                                     class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200"
@@ -107,8 +112,8 @@ const formatPeriod = (start, end) => {
                             <p class="text-xs text-slate-500 mt-1 font-medium">
                                 {{ formatPeriod(experience.start_date, experience.end_date) }}
                             </p>
-                            <p v-if="experience.description" class="text-sm text-slate-600 mt-2 line-clamp-2">
-                                {{ experience.description }}
+                            <p v-if="tr(experience.description)" class="text-sm text-slate-600 mt-2 line-clamp-2">
+                                {{ tr(experience.description) }}
                             </p>
                         </div>
 

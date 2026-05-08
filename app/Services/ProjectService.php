@@ -18,6 +18,14 @@ class ProjectService
         return Project::with('stacks')->orderBy('order')->get();
     }
 
+    public function featured(): Collection
+    {
+        return Project::with('stacks')
+            ->where('is_featured', true)
+            ->orderBy('order')
+            ->get();
+    }
+
     public function store(array $data, array $stackIds): Project
     {
         return DB::transaction(function () use ($data, $stackIds) {

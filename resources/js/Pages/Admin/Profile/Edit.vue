@@ -14,11 +14,16 @@ const props = defineProps({
     },
 });
 
+const toTrans = (val) => {
+    if (val && typeof val === 'object') return { pt: val.pt || '', en: val.en || '' };
+    return { pt: val || '', en: '' };
+};
+
 const form = useForm({
     _method: 'put',
     name: props.profile.name,
-    headline: props.profile.headline,
-    bio: props.profile.bio || '',
+    headline: toTrans(props.profile.headline),
+    bio: toTrans(props.profile.bio),
     email: props.profile.email,
     avatar: null,
     resume_url: props.profile.resume_url || '',
@@ -111,11 +116,18 @@ const submit = () => {
                                         <InputError class="mt-2" :message="form.errors.name" />
                                     </div>
 
-                                    <!-- Headline -->
+                                    <!-- Headline (PT) -->
                                     <div class="sm:col-span-1">
-                                        <InputLabel for="headline" value="Título Profissional (Ex: Full Stack Developer)" />
-                                        <TextInput id="headline" type="text" class="mt-1 block w-full transition-shadow hover:shadow-sm" v-model="form.headline" required />
-                                        <InputError class="mt-2" :message="form.errors.headline" />
+                                        <InputLabel for="headline_pt" value="Título Profissional (PT)" />
+                                        <TextInput id="headline_pt" type="text" class="mt-1 block w-full transition-shadow hover:shadow-sm" v-model="form.headline.pt" required />
+                                        <InputError class="mt-2" :message="form.errors['headline.pt']" />
+                                    </div>
+
+                                    <!-- Headline (EN) -->
+                                    <div class="sm:col-span-1">
+                                        <InputLabel for="headline_en" value="Título Profissional (EN)" />
+                                        <TextInput id="headline_en" type="text" class="mt-1 block w-full transition-shadow hover:shadow-sm" v-model="form.headline.en" placeholder="Full Stack Developer" />
+                                        <InputError class="mt-2" :message="form.errors['headline.en']" />
                                     </div>
 
                                     <!-- Email -->
@@ -133,13 +145,22 @@ const submit = () => {
                                     </div>
                                 </div>
 
-                                <!-- Bio -->
+                                <!-- Bio PT -->
                                 <div>
-                                    <InputLabel for="bio" value="Resumo / Bio" />
+                                    <InputLabel for="bio_pt" value="Resumo / Bio (PT)" />
                                     <div class="mt-1">
-                                        <textarea id="bio" rows="5" class="block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow hover:shadow-sm" v-model="form.bio" placeholder="Escreva um pouco sobre você..."></textarea>
+                                        <textarea id="bio_pt" rows="5" class="block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow hover:shadow-sm" v-model="form.bio.pt" placeholder="Escreva um pouco sobre você..."></textarea>
                                     </div>
-                                    <InputError class="mt-2" :message="form.errors.bio" />
+                                    <InputError class="mt-2" :message="form.errors['bio.pt']" />
+                                </div>
+
+                                <!-- Bio EN -->
+                                <div>
+                                    <InputLabel for="bio_en" value="Resumo / Bio (EN)" />
+                                    <div class="mt-1">
+                                        <textarea id="bio_en" rows="5" class="block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow hover:shadow-sm" v-model="form.bio.en" placeholder="Write a short bio about yourself..."></textarea>
+                                    </div>
+                                    <InputError class="mt-2" :message="form.errors['bio.en']" />
                                 </div>
                             </div>
 

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Profile extends Model
 {
+    use HasTranslations;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,4 +23,19 @@ class Profile extends Model
         'avatar_path',
         'resume_url',
     ];
+
+    public array $translatable = [
+        'headline',
+        'bio',
+    ];
+
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+        foreach ($this->getTranslatableAttributes() as $field) {
+            $array[$field] = $this->getTranslations($field);
+        }
+
+        return $array;
+    }
 }

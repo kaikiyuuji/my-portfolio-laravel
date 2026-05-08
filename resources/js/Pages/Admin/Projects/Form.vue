@@ -22,10 +22,15 @@ const isEditing = computed(() => props.project !== null);
 
 const initialStackIds = props.project?.stacks?.map((s) => s.id) ?? [];
 
+const toTrans = (val) => {
+    if (val && typeof val === 'object') return { pt: val.pt || '', en: val.en || '' };
+    return { pt: val || '', en: '' };
+};
+
 const form = useForm({
     _method: isEditing.value ? 'put' : 'post',
-    title: props.project?.title ?? '',
-    description: props.project?.description ?? '',
+    title: toTrans(props.project?.title),
+    description: toTrans(props.project?.description),
     repository_url: props.project?.repository_url ?? '',
     demo_url: props.project?.demo_url ?? '',
     order: props.project?.order ?? 0,
@@ -120,32 +125,32 @@ const submit = () => {
                         </div>
 
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Title -->
-                            <div class="sm:col-span-2">
-                                <InputLabel for="title" value="Título" />
-                                <TextInput
-                                    id="title"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    v-model="form.title"
-                                    required
-                                    placeholder="Ex: Portfolio Pessoal"
-                                />
-                                <InputError class="mt-2" :message="form.errors.title" />
+                            <!-- Title PT -->
+                            <div class="sm:col-span-1">
+                                <InputLabel for="title_pt" value="Título (PT)" />
+                                <TextInput id="title_pt" type="text" class="mt-1 block w-full" v-model="form.title.pt" required placeholder="Ex: Portfolio Pessoal" />
+                                <InputError class="mt-2" :message="form.errors['title.pt']" />
                             </div>
 
-                            <!-- Description -->
+                            <!-- Title EN -->
+                            <div class="sm:col-span-1">
+                                <InputLabel for="title_en" value="Título (EN)" />
+                                <TextInput id="title_en" type="text" class="mt-1 block w-full" v-model="form.title.en" placeholder="Ex: Personal Portfolio" />
+                                <InputError class="mt-2" :message="form.errors['title.en']" />
+                            </div>
+
+                            <!-- Description PT -->
                             <div class="sm:col-span-2">
-                                <InputLabel for="description" value="Descrição" />
-                                <textarea
-                                    id="description"
-                                    rows="4"
-                                    class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.description"
-                                    required
-                                    placeholder="Descreva o projeto..."
-                                ></textarea>
-                                <InputError class="mt-2" :message="form.errors.description" />
+                                <InputLabel for="description_pt" value="Descrição (PT)" />
+                                <textarea id="description_pt" rows="4" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="form.description.pt" required placeholder="Descreva o projeto..."></textarea>
+                                <InputError class="mt-2" :message="form.errors['description.pt']" />
+                            </div>
+
+                            <!-- Description EN -->
+                            <div class="sm:col-span-2">
+                                <InputLabel for="description_en" value="Descrição (EN)" />
+                                <textarea id="description_en" rows="4" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="form.description.en" placeholder="Describe the project..."></textarea>
+                                <InputError class="mt-2" :message="form.errors['description.en']" />
                             </div>
 
                             <!-- Repository URL -->

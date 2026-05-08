@@ -20,10 +20,15 @@ const toDateInput = (value) => (value ? String(value).slice(0, 10) : '');
 
 const isCurrent = ref(props.experience ? !props.experience.end_date : false);
 
+const toTrans = (val) => {
+    if (val && typeof val === 'object') return { pt: val.pt || '', en: val.en || '' };
+    return { pt: val || '', en: '' };
+};
+
 const form = useForm({
-    company: props.experience?.company ?? '',
-    role: props.experience?.role ?? '',
-    description: props.experience?.description ?? '',
+    company: toTrans(props.experience?.company),
+    role: toTrans(props.experience?.role),
+    description: toTrans(props.experience?.description),
     start_date: toDateInput(props.experience?.start_date),
     end_date: toDateInput(props.experience?.end_date),
     order: props.experience?.order ?? 0,
@@ -75,32 +80,32 @@ const submit = () => {
                 <div class="shadow-sm sm:overflow-hidden sm:rounded-2xl border border-slate-100 bg-white">
                     <div class="space-y-6 px-4 py-6 sm:p-8">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Company -->
+                            <!-- Company PT -->
                             <div class="sm:col-span-1">
-                                <InputLabel for="company" value="Empresa" />
-                                <TextInput
-                                    id="company"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    v-model="form.company"
-                                    required
-                                    placeholder="Ex: Acme Corp"
-                                />
-                                <InputError class="mt-2" :message="form.errors.company" />
+                                <InputLabel for="company_pt" value="Empresa (PT)" />
+                                <TextInput id="company_pt" type="text" class="mt-1 block w-full" v-model="form.company.pt" required placeholder="Ex: Acme Corp" />
+                                <InputError class="mt-2" :message="form.errors['company.pt']" />
                             </div>
 
-                            <!-- Role -->
+                            <!-- Company EN -->
                             <div class="sm:col-span-1">
-                                <InputLabel for="role" value="Cargo" />
-                                <TextInput
-                                    id="role"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    v-model="form.role"
-                                    required
-                                    placeholder="Ex: Backend Developer"
-                                />
-                                <InputError class="mt-2" :message="form.errors.role" />
+                                <InputLabel for="company_en" value="Empresa (EN)" />
+                                <TextInput id="company_en" type="text" class="mt-1 block w-full" v-model="form.company.en" placeholder="Ex: Acme Corp" />
+                                <InputError class="mt-2" :message="form.errors['company.en']" />
+                            </div>
+
+                            <!-- Role PT -->
+                            <div class="sm:col-span-1">
+                                <InputLabel for="role_pt" value="Cargo (PT)" />
+                                <TextInput id="role_pt" type="text" class="mt-1 block w-full" v-model="form.role.pt" required placeholder="Ex: Desenvolvedor Backend" />
+                                <InputError class="mt-2" :message="form.errors['role.pt']" />
+                            </div>
+
+                            <!-- Role EN -->
+                            <div class="sm:col-span-1">
+                                <InputLabel for="role_en" value="Cargo (EN)" />
+                                <TextInput id="role_en" type="text" class="mt-1 block w-full" v-model="form.role.en" placeholder="Ex: Backend Developer" />
+                                <InputError class="mt-2" :message="form.errors['role.en']" />
                             </div>
 
                             <!-- Start Date -->
@@ -157,17 +162,18 @@ const submit = () => {
                             </div>
                         </div>
 
-                        <!-- Description -->
+                        <!-- Description PT -->
                         <div>
-                            <InputLabel for="description" value="Descrição (opcional)" />
-                            <textarea
-                                id="description"
-                                rows="5"
-                                class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                v-model="form.description"
-                                placeholder="Atividades, conquistas, tecnologias usadas..."
-                            ></textarea>
-                            <InputError class="mt-2" :message="form.errors.description" />
+                            <InputLabel for="description_pt" value="Descrição (PT)" />
+                            <textarea id="description_pt" rows="5" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="form.description.pt" placeholder="Atividades, conquistas, tecnologias..."></textarea>
+                            <InputError class="mt-2" :message="form.errors['description.pt']" />
+                        </div>
+
+                        <!-- Description EN -->
+                        <div>
+                            <InputLabel for="description_en" value="Descrição (EN)" />
+                            <textarea id="description_en" rows="5" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="form.description.en" placeholder="Activities, achievements, technologies..."></textarea>
+                            <InputError class="mt-2" :message="form.errors['description.en']" />
                         </div>
                     </div>
 
