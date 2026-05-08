@@ -13,7 +13,7 @@ class StackServiceTest extends TestCase
 
     private function makeService(): StackService
     {
-        return new StackService();
+        return new StackService;
     }
 
     private function createStack(array $overrides = []): Stack

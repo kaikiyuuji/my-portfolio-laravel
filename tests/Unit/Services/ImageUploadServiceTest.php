@@ -11,7 +11,7 @@ class ImageUploadServiceTest extends TestCase
 {
     private function makeService(): ImageUploadService
     {
-        return new ImageUploadService();
+        return new ImageUploadService;
     }
 
     // ─── store() ──────────────────────────────────────────────────

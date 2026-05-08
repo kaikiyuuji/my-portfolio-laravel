@@ -13,7 +13,7 @@ class SocialLinkServiceTest extends TestCase
 
     private function makeService(): SocialLinkService
     {
-        return new SocialLinkService();
+        return new SocialLinkService;
     }
 
     private function createLink(array $overrides = []): SocialLink

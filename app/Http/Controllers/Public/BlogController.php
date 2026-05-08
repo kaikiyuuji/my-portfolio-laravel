@@ -27,7 +27,7 @@ class BlogController extends Controller
         $post = $this->postService->findPublishedBySlug($slug);
 
         if (! $post) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         return Inertia::render('Public/Blog/Show', [
