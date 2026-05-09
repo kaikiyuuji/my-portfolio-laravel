@@ -15,7 +15,7 @@ const messages = {
         blog: {
             label: 'Artigos',
             title: 'Blog',
-            subtitle: 'Anotações sobre engenharia, produto e o caminho do desenvolvimento.',
+            subtitle: 'Ideias, experimentos e aprendizados sobre software, tecnologia e desenvolvimento.',
             empty: 'Nenhum post publicado ainda.',
             readMore: 'Ler post',
             backToList: 'Todos os posts',
@@ -64,8 +64,8 @@ const messages = {
         },
         months: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
         meta: {
-            defaultDescription: 'Portfolio de desenvolvimento — projetos, stacks e artigos sobre engenharia de software.',
-            blogIndexDescription: 'Artigos sobre engenharia, produto e o caminho do desenvolvimento.',
+            defaultDescription: 'Portfolio de desenvolvimento — projetos, stacks e artigos sobre software, tecnologia e desenvolvimento.',
+            blogIndexDescription: 'Artigos sobre software, tecnologia e desenvolvimento.',
         },
     },
     en: {
@@ -80,7 +80,7 @@ const messages = {
         blog: {
             label: 'Articles',
             title: 'Blog',
-            subtitle: 'Notes on engineering, product and the path of development.',
+            subtitle: 'Ideas, experiments, and learnings about software, technology and development.',
             empty: 'No published posts yet.',
             readMore: 'Read post',
             backToList: 'All posts',
@@ -129,8 +129,8 @@ const messages = {
         },
         months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         meta: {
-            defaultDescription: 'Software development portfolio — projects, stacks and articles about software engineering.',
-            blogIndexDescription: 'Notes on engineering, product and the path of development.',
+            defaultDescription: 'Software development portfolio — projects, stacks and articles about software, technology and development.',
+            blogIndexDescription: 'Notes on software, technology and development.',
         },
     },
 };
