@@ -112,10 +112,9 @@ jobs:
           $COMPOSE pull app
 
           # Recria app + volume app_code (necessário pro nginx ver código novo).
-          $COMPOSE stop app nginx
-          $COMPOSE rm -f app nginx
+          $COMPOSE down --remove-orphans
           docker volume rm my-portfolio_app_code 2>/dev/null || true
-          $COMPOSE up -d app nginx
+          $COMPOSE up -d --force-recreate app nginx
 
           # Espera healthcheck do app subir.
           for i in 1 2 3 4 5 6 7 8 9 10; do
