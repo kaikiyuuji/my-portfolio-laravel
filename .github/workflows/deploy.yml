@@ -67,6 +67,8 @@ jobs:
     needs: docker-build
     environment: production
     steps:
+      - uses: actions/checkout@v4
+
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
@@ -78,12 +80,12 @@ jobs:
         env:
           USER: ${{ secrets.DO_DROPLET_USER }}
           IP: ${{ secrets.DO_DROPLET_IP }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ needs.docker-build.outputs.image }}
         run: |
           ssh "$USER@$IP" "set -euo pipefail; \
             cd /opt/portfolio && \
-            export APP_IMAGE=ghcr.io/${{ env.IMAGE_NAME }}:$IMAGE_TAG && \
-            echo \"APP_IMAGE=$APP_IMAGE\" > .env.image && \
+            export APP_IMAGE=$IMAGE_TAG && \
+            echo \"APP_IMAGE=\$APP_IMAGE\" > .env.image && \
             docker compose --env-file .env --env-file .env.image pull app && \
             docker compose --env-file .env --env-file .env.image exec -T mysql \
               sh -c 'mysqldump -uroot -p\$MYSQL_ROOT_PASSWORD \$MYSQL_DATABASE | gzip > /var/lib/mysql/backup-pre-deploy-\$(date +%Y%m%d-%H%M%S).sql.gz' && \
