@@ -6,6 +6,20 @@
 *.md diff=markdown
 *.php diff=php
 
+# Binary files — never apply text/eol conversion.
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
