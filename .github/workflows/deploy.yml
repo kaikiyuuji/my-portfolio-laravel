@@ -113,8 +113,13 @@ jobs:
 
           # Recria app + volume app_code (necessário pro nginx ver código novo).
           $COMPOSE down --remove-orphans
-          docker volume rm my-portfolio_app_code 2>/dev/null || true
-          $COMPOSE up -d --force-recreate app nginx
+          # Remove app_code volume independente do prefixo (project name pode variar).
+          docker volume ls -q --filter name=app_code | xargs -r docker volume rm 2>/dev/null || true
+          echo "=== Volumes restantes ==="
+          docker volume ls
+          $COMPOSE up -d --force-recreate
+          echo "=== Containers após recreate ==="
+          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}'
 
           # Espera healthcheck do app subir.
           for i in 1 2 3 4 5 6 7 8 9 10; do
