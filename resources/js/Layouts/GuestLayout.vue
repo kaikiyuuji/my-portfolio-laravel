@@ -9,10 +9,10 @@ import { Link } from '@inertiajs/vue3';
     >
         <div>
             <Link href="/" class="group flex justify-center">
-                <img 
-                    src="/favicon.ico" 
-                    alt="Logo" 
-                    class="h-20 w-20 transition-transform duration-300 group-hover:rotate-12" 
+                <img
+                    src="/logo.png"
+                    alt="Logo"
+                    class="h-20 w-20 transition-transform duration-300 group-hover:rotate-12"
                 />
             </Link>
         </div>
