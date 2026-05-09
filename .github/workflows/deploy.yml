@@ -102,24 +102,20 @@ jobs:
           COMPOSE="docker compose --env-file .env --env-file .env.image"
 
           # Backup pré-deploy (mysqldump dentro do container mysql, dump no volume).
+          # < /dev/null evita que exec consuma stdin do heredoc (bash -s).
           $COMPOSE exec -T mysql sh -c '
               mysqldump --single-transaction --quick --lock-tables=false \
                   -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" \
                   | gzip > "/var/lib/mysql/backup-pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz"
-          '
+          ' < /dev/null
 
           # Pull da nova imagem.
           $COMPOSE pull app
 
           # Recria app + volume app_code (necessário pro nginx ver código novo).
           $COMPOSE down --remove-orphans
-          # Remove app_code volume independente do prefixo (project name pode variar).
           docker volume ls -q --filter name=app_code | xargs -r docker volume rm 2>/dev/null || true
-          echo "=== Volumes restantes ==="
-          docker volume ls
           $COMPOSE up -d --force-recreate
-          echo "=== Containers após recreate ==="
-          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}'
 
           # Espera healthcheck do app subir.
           for i in 1 2 3 4 5 6 7 8 9 10; do
@@ -128,10 +124,10 @@ jobs:
               sleep 3
           done
 
-          $COMPOSE exec -T app php artisan migrate --force
-          $COMPOSE exec -T app php artisan config:cache
-          $COMPOSE exec -T app php artisan route:cache
-          $COMPOSE exec -T app php artisan view:cache
+          $COMPOSE exec -T app php artisan migrate --force < /dev/null
+          $COMPOSE exec -T app php artisan config:cache < /dev/null
+          $COMPOSE exec -T app php artisan route:cache < /dev/null
+          $COMPOSE exec -T app php artisan view:cache < /dev/null
           REMOTE
 
       - name: Smoke test
