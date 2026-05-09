@@ -27,7 +27,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image: ${{ steps.meta.outputs.tags }}
+      image_ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -67,8 +67,6 @@ jobs:
     needs: docker-build
     environment: production
     steps:
-      - uses: actions/checkout@v4
-
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
@@ -78,33 +76,65 @@ jobs:
 
       - name: Pull image, migrate, optimize
         env:
-          USER: ${{ secrets.DROPLET_USER }}
-          IP: ${{ secrets.DROPLET_HOST }}
-          IMAGE_TAG: ${{ needs.docker-build.outputs.image }}
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          DROPLET_HOST: ${{ secrets.DROPLET_HOST }}
+          IMAGE_REF: ${{ needs.docker-build.outputs.image_ref }}
+          PROJECT_DIR: /home/deploy/portfolio
         run: |
-          ssh "$USER@$IP" "set -euo pipefail; \
-            cd /opt/portfolio && \
-            export APP_IMAGE=$IMAGE_TAG && \
-            echo \"APP_IMAGE=\$APP_IMAGE\" > .env.image && \
-            docker compose --env-file .env --env-file .env.image pull app && \
-            docker compose --env-file .env --env-file .env.image exec -T mysql \
-              sh -c 'mysqldump -uroot -p\$MYSQL_ROOT_PASSWORD \$MYSQL_DATABASE | gzip > /var/lib/mysql/backup-pre-deploy-\$(date +%Y%m%d-%H%M%S).sql.gz' && \
-            docker compose --env-file .env --env-file .env.image up -d --no-deps app && \
-            docker compose --env-file .env --env-file .env.image exec -T app php artisan migrate --force && \
-            docker compose --env-file .env --env-file .env.image exec -T app php artisan config:cache && \
-            docker compose --env-file .env --env-file .env.image exec -T app php artisan route:cache && \
-            docker compose --env-file .env --env-file .env.image exec -T app php artisan view:cache && \
-            docker compose --env-file .env --env-file .env.image up -d --no-deps nginx"
+          ssh "$DROPLET_USER@$DROPLET_HOST" \
+            IMAGE_REF="$IMAGE_REF" \
+            PROJECT_DIR="$PROJECT_DIR" \
+            'bash -s' <<'REMOTE'
+          set -euo pipefail
+
+          cd "$PROJECT_DIR"
+
+          # Atualiza repo (nginx conf, compose.yml, scripts vivem no host).
+          git fetch --all --prune
+          git reset --hard origin/main
+
+          # Pin de imagem deste deploy.
+          echo "APP_IMAGE=$IMAGE_REF" > .env.image
+
+          COMPOSE="docker compose --env-file .env --env-file .env.image"
+
+          # Backup pré-deploy (mysqldump dentro do container mysql, dump no volume).
+          $COMPOSE exec -T mysql sh -c '
+              mysqldump --single-transaction --quick --lock-tables=false \
+                  -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" \
+                  | gzip > "/var/lib/mysql/backup-pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz"
+          '
+
+          # Pull da nova imagem.
+          $COMPOSE pull app
+
+          # Recria app + volume app_code (necessário pro nginx ver código novo).
+          $COMPOSE stop app nginx
+          $COMPOSE rm -f app nginx
+          docker volume rm my-portfolio_app_code 2>/dev/null || true
+          $COMPOSE up -d app nginx
+
+          # Espera healthcheck do app subir.
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+              status=$($COMPOSE ps --format json app | sed -n 's/.*"Health":"\([^"]*\)".*/\1/p' || true)
+              if [ "$status" = "healthy" ]; then break; fi
+              sleep 3
+          done
+
+          $COMPOSE exec -T app php artisan migrate --force
+          $COMPOSE exec -T app php artisan config:cache
+          $COMPOSE exec -T app php artisan route:cache
+          $COMPOSE exec -T app php artisan view:cache
+          REMOTE
 
       - name: Smoke test
-        env:
-          IP: ${{ secrets.DROPLET_HOST }}
         run: |
-          for i in 1 2 3 4 5; do
-            if curl -fsS "http://$IP/up" > /dev/null; then
-              echo "App is up"
-              exit 0
-            fi
-            sleep 5
+          for i in 1 2 3 4 5 6; do
+              if curl -fsSL --max-time 10 "https://kaikihirata.dev/up" > /dev/null; then
+                  echo "App is up"
+                  exit 0
+              fi
+              sleep 5
           done
-          echo "Smoke test failed" && exit 1
+          echo "Smoke test failed"
+          exit 1
