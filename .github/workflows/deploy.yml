@@ -72,14 +72,14 @@ jobs:
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "${{ secrets.DO_DROPLET_IP }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.DROPLET_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Pull image, migrate, optimize
         env:
-          USER: ${{ secrets.DO_DROPLET_USER }}
-          IP: ${{ secrets.DO_DROPLET_IP }}
+          USER: ${{ secrets.DROPLET_USER }}
+          IP: ${{ secrets.DROPLET_HOST }}
           IMAGE_TAG: ${{ needs.docker-build.outputs.image }}
         run: |
           ssh "$USER@$IP" "set -euo pipefail; \
@@ -98,7 +98,7 @@ jobs:
 
       - name: Smoke test
         env:
-          IP: ${{ secrets.DO_DROPLET_IP }}
+          IP: ${{ secrets.DROPLET_HOST }}
         run: |
           for i in 1 2 3 4 5; do
             if curl -fsS "http://$IP/up" > /dev/null; then
