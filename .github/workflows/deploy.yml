@@ -89,6 +89,9 @@ jobs:
 
           cd "$PROJECT_DIR"
 
+          # Tolera ownership misto do repo (clone feito como outro user, etc).
+          git config --global --add safe.directory "$PROJECT_DIR"
+
           # Atualiza repo (nginx conf, compose.yml, scripts vivem no host).
           git fetch --all --prune
           git reset --hard origin/main
