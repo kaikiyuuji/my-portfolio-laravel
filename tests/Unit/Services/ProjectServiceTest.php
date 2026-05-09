@@ -167,6 +167,8 @@ class ProjectServiceTest extends TestCase
 
         $service = $this->makeService($mockUploadService);
         $service->destroy($project);
+
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
 
     // ─── reorder() ────────────────────────────────────────────────
