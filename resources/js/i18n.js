@@ -29,7 +29,7 @@ const messages = {
         },
         stacks: {
             label: 'Tecnologias',
-            title: 'Stacks que utilizo',
+            title: 'Tecnologias que utilizo',
             empty: 'Nenhuma stack cadastrada ainda.',
         },
         experience: {
@@ -94,7 +94,7 @@ const messages = {
         },
         stacks: {
             label: 'Technologies',
-            title: 'Stacks I use',
+            title: 'Technologies I Work With',
             empty: 'No stacks registered yet.',
         },
         experience: {
