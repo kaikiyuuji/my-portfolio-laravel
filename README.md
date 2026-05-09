@@ -85,7 +85,7 @@ Imagens vão para o disco `s3` (DO Spaces) em produção, `public` em desenvolvi
 
 ### Design Patterns
 
-Service Layer, Repository (via Eloquent), Singleton (Profile), Observer (cleanup de imagens órfãs), Form Request, Facade, Dependency Injection, Strategy (locale + dark mode), Middleware Pipeline. Catálogo completo em [`PLANEJAMENTO.md`](./PLANEJAMENTO.md) seção 7.
+Service Layer, Repository (via Eloquent), Singleton (Profile), Observer (cleanup de imagens órfãs), Form Request, Facade, Dependency Injection, Strategy (locale + dark mode), Middleware Pipeline.
 
 ---
 
@@ -164,8 +164,6 @@ Tests rodam em SQLite em memória com `RefreshDatabase`. Drivers `array` para ca
 
 ## Deploy em Produção
 
-Documentação detalhada em [`PLANEJAMENTO 2.md`](./PLANEJAMENTO%202.md) seção 13.
-
 ### Topologia
 
 ```
@@ -242,19 +240,8 @@ my-portfolio-laravel/
 ├── .github/
 │   ├── workflows/{ci,deploy,audit}.yml
 │   └── dependabot.yml
-├── docker-compose.yml
-├── PLANEJAMENTO.md                      # arquitetura, hurdles, patterns
-├── PLANEJAMENTO 2.md                    # histórico de implementação + deploy
-└── PLANEJAMENTO 3.md                    # roadmap operacional
+└── docker-compose.yml
 ```
-
----
-
-## Documentação Complementar
-
-- [`PLANEJAMENTO.md`](./PLANEJAMENTO.md) — visão arquitetural, módulos, hurdles previstos, design patterns, pipeline operacional
-- [`PLANEJAMENTO 2.md`](./PLANEJAMENTO%202.md) — histórico detalhado de cada módulo implementado, suite de testes, deploy em produção (seção 13)
-- [`PLANEJAMENTO 3.md`](./PLANEJAMENTO%203.md) — guia de provisionamento do droplet, secrets, runbook
 
 ---
 
