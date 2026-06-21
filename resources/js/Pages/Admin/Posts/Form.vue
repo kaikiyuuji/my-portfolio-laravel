@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import MarkdownEditor from '@/Components/MarkdownEditor.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
@@ -155,15 +156,26 @@ const submit = () => {
 
                             <!-- Body PT -->
                             <div class="sm:col-span-2">
-                                <InputLabel for="body_pt" value="Conteúdo (PT) — aceita HTML/Markdown" />
-                                <textarea id="body_pt" rows="12" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 font-mono text-sm leading-6" v-model="form.body.pt" required placeholder="Conteúdo completo do post..."></textarea>
+                                <MarkdownEditor
+                                    id="body_pt"
+                                    v-model="form.body.pt"
+                                    label="Conteúdo em português"
+                                    language="PT-BR"
+                                    required
+                                    placeholder="# Título do post&#10;&#10;Comece a escrever seu conteúdo em Markdown ou HTML..."
+                                />
                                 <InputError class="mt-2" :message="form.errors['body.pt']" />
                             </div>
 
                             <!-- Body EN -->
                             <div class="sm:col-span-2">
-                                <InputLabel for="body_en" value="Conteúdo (EN)" />
-                                <textarea id="body_en" rows="12" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 font-mono text-sm leading-6" v-model="form.body.en" placeholder="Full post content..."></textarea>
+                                <MarkdownEditor
+                                    id="body_en"
+                                    v-model="form.body.en"
+                                    label="Content in English"
+                                    language="EN-US"
+                                    placeholder="# Post title&#10;&#10;Start writing your content in Markdown or HTML..."
+                                />
                                 <InputError class="mt-2" :message="form.errors['body.en']" />
                             </div>
 
