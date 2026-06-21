@@ -1,149 +1,171 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { useDarkMode } from '@/Composables/useDarkMode';
 
-const showingNavigationDropdown = ref(false);
 const page = usePage();
+const { isDark, toggle } = useDarkMode();
+const mobileOpen = ref(false);
+
+const navItems = computed(() => [
+    { label: 'Dashboard', index: '01', route: 'admin.dashboard', pattern: 'admin.dashboard' },
+    { label: 'Portfolio', index: '02', route: 'admin.profile.edit', pattern: 'admin.profile.*' },
+    { label: 'Tecnologias', index: '03', route: 'admin.stacks.index', pattern: 'admin.stacks.*' },
+    { label: 'Experiências', index: '04', route: 'admin.experiences.index', pattern: 'admin.experiences.*' },
+    { label: 'Projetos', index: '05', route: 'admin.projects.index', pattern: 'admin.projects.*' },
+    { label: 'Redes sociais', index: '06', route: 'admin.social-links.index', pattern: 'admin.social-links.*' },
+    { label: 'Blog', index: '07', route: 'admin.posts.index', pattern: 'admin.posts.*' },
+]);
+
+function closeMobile() {
+    mobileOpen.value = false;
+}
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-500 selection:text-white">
-        <!-- Modern Glass Topnav -->
-        <nav class="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-slate-200/50 shadow-sm">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-16 justify-between items-center">
-                    <div class="flex items-center gap-8">
-                        <!-- Logo -->
-                        <div class="flex shrink-0 items-center">
-                            <Link :href="route('admin.dashboard')" class="group flex items-center gap-2">
-                                <span class="font-bold text-xl tracking-tight text-slate-800">Admin</span>
-                            </Link>
-                        </div>
+    <div class="admin-shell portfolio-canvas min-h-screen text-[var(--ink)]">
+        <aside class="fixed inset-y-0 left-0 z-50 hidden w-72 border-r border-[var(--line)] bg-[var(--paper-raised)] lg:flex lg:flex-col">
+            <div class="flex h-[88px] items-center gap-3 border-b border-[var(--line)] px-6">
+                <Link :href="route('admin.dashboard')" class="blueprint-grid grid h-11 w-11 place-items-center border border-[var(--ink)] font-mono text-xs font-bold">
+                    AD
+                </Link>
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-bold tracking-[-0.03em]">Portfolio Admin</p>
+                    <p class="technical-label mt-1">Control system / 2026</p>
+                </div>
+            </div>
 
-                        <!-- Main Desktop Navigation -->
-                        <div class="hidden sm:flex sm:items-center sm:space-x-4 h-16">
-                            <NavLink :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">
-                                Dashboard
-                            </NavLink>
-                            <NavLink :href="route('admin.profile.edit')" :active="route().current('admin.profile.*')">
-                                Portfolio Público
-                            </NavLink>
-                            <NavLink :href="route('admin.stacks.index')" :active="route().current('admin.stacks.*')">
-                                Tecnologias
-                            </NavLink>
-                            <NavLink :href="route('admin.experiences.index')" :active="route().current('admin.experiences.*')">
-                                Experiências
-                            </NavLink>
-                            <NavLink :href="route('admin.projects.index')" :active="route().current('admin.projects.*')">
-                                Projetos
-                            </NavLink>
-                            <NavLink :href="route('admin.social-links.index')" :active="route().current('admin.social-links.*')">
-                                Redes Sociais
-                            </NavLink>
-                            <NavLink :href="route('admin.posts.index')" :active="route().current('admin.posts.*')">
-                                Blog
-                            </NavLink>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <p class="technical-label mb-3 px-3">Navigation index</p>
+                <Link
+                    v-for="item in navItems"
+                    :key="item.route"
+                    :href="route(item.route)"
+                    class="group flex items-center gap-3 border-b border-[var(--line)] px-3 py-3.5 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] transition-all"
+                    :class="route().current(item.pattern)
+                        ? 'border-l-4 border-l-[var(--accent)] bg-[var(--paper)] text-[var(--ink)]'
+                        : 'text-[var(--muted)] hover:bg-[var(--paper)] hover:text-[var(--ink)]'"
+                >
+                    <span class="text-[var(--accent)]">{{ item.index }}</span>
+                    <span>{{ item.label }}</span>
+                    <span class="ml-auto transition-transform group-hover:translate-x-1">→</span>
+                </Link>
+            </nav>
+
+            <div class="border-t border-[var(--line)] p-4">
+                <div class="mb-3 border border-[var(--line)] p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="blueprint-grid grid h-9 w-9 shrink-0 place-items-center border border-[var(--ink)] font-mono text-xs font-bold">
+                            {{ page.props.auth.user.name.charAt(0).toUpperCase() }}
+                        </span>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold">{{ page.props.auth.user.name }}</p>
+                            <p class="truncate font-mono text-[9px] text-[var(--muted)]">{{ page.props.auth.user.email }}</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- User Menu Desktop -->
-                    <div class="hidden sm:flex sm:items-center">
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
-                                <button type="button" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-full hover:bg-slate-50 hover:border-slate-300 transition focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm">
-                                    <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
-                                        {{ $page.props.auth.user.name.charAt(0) }}
-                                    </div>
-                                    <span>{{ $page.props.auth.user.name }}</span>
-                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                            </template>
-                            <template #content>
-                                <div class="px-4 py-3 border-b border-slate-100">
-                                    <p class="text-sm font-medium text-slate-900 truncate">{{ $page.props.auth.user.email }}</p>
-                                    <p class="text-xs text-slate-500 mt-0.5">Conta Administrador</p>
-                                </div>
-                                <DropdownLink :href="route('profile.edit')">
-                                    Configurações da Conta
-                                </DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button" class="text-red-600 hover:text-red-700 hover:bg-red-50">
-                                    Sair
-                                </DropdownLink>
-                            </template>
-                        </Dropdown>
+                <div class="grid grid-cols-2 gap-2">
+                    <Link
+                        :href="route('profile.edit')"
+                        class="admin-quiet-button"
+                    >
+                        Conta
+                    </Link>
+                    <Link
+                        :href="route('logout')"
+                        method="post"
+                        as="button"
+                        class="admin-quiet-button text-red-600"
+                    >
+                        Sair
+                    </Link>
+                </div>
+            </div>
+        </aside>
+
+        <div class="min-h-screen lg:pl-72">
+            <header class="sticky top-0 z-40 border-b border-[var(--line)] bg-[color:var(--paper)]/95 backdrop-blur-xl">
+                <div class="flex h-[72px] items-center justify-between px-4 sm:px-6 lg:px-8">
+                    <button
+                        type="button"
+                        class="grid h-10 w-10 place-items-center border border-[var(--line)] bg-[var(--paper-raised)] lg:hidden"
+                        :aria-expanded="mobileOpen"
+                        aria-label="Abrir navegação"
+                        @click="mobileOpen = !mobileOpen"
+                    >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path v-if="!mobileOpen" d="M4 7h16M4 12h16M4 17h16" />
+                            <path v-else d="M6 6l12 12M18 6 6 18" />
+                        </svg>
+                    </button>
+
+                    <div class="hidden lg:block">
+                        <p class="technical-label">Authenticated workspace</p>
                     </div>
 
-                    <!-- Mobile Menu Button -->
-                    <div class="flex items-center sm:hidden">
-                        <button @click="showingNavigationDropdown = !showingNavigationDropdown" class="p-2 text-slate-500 rounded-lg hover:bg-slate-100 transition focus:outline-none">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{'hidden': showingNavigationDropdown, 'inline-flex': !showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{'hidden': !showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <div class="flex items-center gap-2">
+                        <a
+                            href="/"
+                            target="_blank"
+                            rel="noopener"
+                            class="admin-quiet-button hidden sm:inline-flex"
+                        >
+                            Ver site ↗
+                        </a>
+                        <button
+                            type="button"
+                            class="grid h-10 w-10 place-items-center border border-[var(--line)] bg-[var(--paper-raised)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                            :aria-label="isDark ? 'Ativar tema claro' : 'Ativar tema escuro'"
+                            @click="toggle"
+                        >
+                            <svg v-if="isDark" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="12" cy="12" r="4" />
+                                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                            </svg>
+                            <svg v-else class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
                             </svg>
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Mobile Menu -->
-            <div :class="{'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown}" class="sm:hidden border-t border-slate-200 bg-white">
-                <div class="pt-2 pb-3 space-y-1">
-                    <ResponsiveNavLink :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">
-                        Dashboard
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.profile.edit')" :active="route().current('admin.profile.*')">
-                        Portfolio Público
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.stacks.index')" :active="route().current('admin.stacks.*')">
-                        Tecnologias
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.experiences.index')" :active="route().current('admin.experiences.*')">
-                        Experiências
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.projects.index')" :active="route().current('admin.projects.*')">
-                        Projetos
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.social-links.index')" :active="route().current('admin.social-links.*')">
-                        Redes Sociais
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('admin.posts.index')" :active="route().current('admin.posts.*')">
-                        Blog
-                    </ResponsiveNavLink>
-                </div>
-                <div class="pt-4 pb-1 border-t border-slate-200">
-                    <div class="px-4">
-                        <div class="font-medium text-base text-slate-800">{{ $page.props.auth.user.name }}</div>
-                        <div class="font-medium text-sm text-slate-500">{{ $page.props.auth.user.email }}</div>
-                    </div>
-                    <div class="mt-3 space-y-1">
-                        <ResponsiveNavLink :href="route('profile.edit')">
-                            Configurações da Conta
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('logout')" method="post" as="button" class="text-red-600">
-                            Sair
-                        </ResponsiveNavLink>
+                <div v-show="mobileOpen" class="border-t border-[var(--line)] bg-[var(--paper-raised)] lg:hidden">
+                    <nav class="grid grid-cols-2 p-3">
+                        <Link
+                            v-for="item in navItems"
+                            :key="item.route"
+                            :href="route(item.route)"
+                            class="flex items-center gap-2 border-b border-r border-[var(--line)] px-3 py-3 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                            :class="{ 'bg-[var(--accent)] text-white': route().current(item.pattern) }"
+                            @click="closeMobile"
+                        >
+                            <span>{{ item.index }}</span>
+                            {{ item.label }}
+                        </Link>
+                    </nav>
+                    <div class="border-t border-[var(--line)] p-3">
+                        <p class="truncate px-2 pb-3 font-mono text-[9px] uppercase tracking-wider text-[var(--muted)]">
+                            {{ page.props.auth.user.email }}
+                        </p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <Link :href="route('profile.edit')" class="admin-quiet-button" @click="closeMobile">Conta</Link>
+                            <a href="/" target="_blank" rel="noopener" class="admin-quiet-button">Site ↗</a>
+                            <Link :href="route('logout')" method="post" as="button" class="admin-quiet-button text-red-600">Sair</Link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
+            </header>
 
-        <!-- Page Header -->
-        <header v-if="$slots.header" class="bg-white/50 backdrop-blur border-b border-slate-200/60 shadow-[0_4px_20px_-15px_rgba(0,0,0,0.1)] relative z-40">
-            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <slot name="header" />
-            </div>
-        </header>
+            <header v-if="$slots.header" class="admin-page-header border-b border-[var(--line)] bg-[var(--paper-raised)]">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    <slot name="header" />
+                </div>
+            </header>
 
-        <!-- Page Content -->
-        <main class="relative z-30 pt-8 pb-16">
-            <slot />
-        </main>
+            <main class="admin-content relative py-8 sm:py-10">
+                <slot />
+            </main>
+        </div>
     </div>
 </template>
