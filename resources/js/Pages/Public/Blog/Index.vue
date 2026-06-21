@@ -24,7 +24,7 @@ const canonicalUrl = computed(() =>
     typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
 );
 
-const postImage = (path) => (path ? `/storage/${path}` : null);
+const postImage = (post) => post?.image_url ?? null;
 
 function formatDate(iso) {
     if (!iso) return '';
@@ -89,8 +89,8 @@ function formatDate(iso) {
                     >
                         <div class="relative aspect-[16/9] overflow-hidden border-b border-[var(--line)] bg-[var(--paper)]">
                             <img
-                                v-if="postImage(post.image_path)"
-                                :src="postImage(post.image_path)"
+                                v-if="postImage(post)"
+                                :src="postImage(post)"
                                 :alt="tr(post.title)"
                                 class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.025]"
                                 loading="lazy"

@@ -102,9 +102,7 @@ function shouldInvertIcon(prefix, id) {
     return (attemptIndex[iconKey(prefix, id)] ?? 0) < 3;
 }
 
-const avatarUrl = computed(() =>
-    props.profile?.avatar_path ? `/storage/${props.profile.avatar_path}` : null,
-);
+const avatarUrl = computed(() => props.profile?.avatar_url ?? null);
 
 const ogTitle = computed(() => props.profile?.name || 'Portfolio');
 const ogDescription = computed(() =>
@@ -119,7 +117,7 @@ const canonicalUrl = computed(() =>
     typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
 );
 
-const projectImage = (path) => (path ? `/storage/${path}` : null);
+const projectImage = (project) => project.image_url ?? null;
 
 const initials = computed(() => {
     const name = props.profile?.name || 'P';
@@ -365,8 +363,8 @@ function formatPeriod(start, end) {
                     >
                         <div class="relative aspect-[16/10] overflow-hidden border-b border-[var(--line)] bg-[var(--paper)]">
                             <img
-                                v-if="projectImage(project.image_path)"
-                                :src="projectImage(project.image_path)"
+                                v-if="projectImage(project)"
+                                :src="projectImage(project)"
                                 :alt="tr(project.title)"
                                 class="halftone-image h-full w-full object-cover object-center"
                                 loading="lazy"

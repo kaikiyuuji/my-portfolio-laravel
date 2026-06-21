@@ -23,7 +23,7 @@ const { t, tm } = useI18n();
 const { tr } = useTranslatable();
 useScrollReveal('.reveal');
 
-const postImage = (path) => (path ? `/storage/${path}` : null);
+const postImage = (post) => post?.image_url ?? null;
 
 function formatDate(iso) {
     if (!iso) return '';
@@ -57,10 +57,10 @@ const ogDescription = computed(() => {
         .slice(0, 160);
 });
 const ogImage = computed(() => {
-    const path = postImage(props.post.image_path);
-    if (!path) return null;
-    if (typeof window === 'undefined') return path;
-    return new URL(path, window.location.origin).toString();
+    const url = postImage(props.post);
+    if (!url) return null;
+    if (typeof window === 'undefined') return url;
+    return url.startsWith('http') ? url : new URL(url, window.location.origin).toString();
 });
 const canonicalUrl = computed(() =>
     typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
@@ -132,11 +132,11 @@ const canonicalUrl = computed(() =>
             <div class="portfolio-section py-8 sm:py-12">
                 <div class="relative mx-auto max-w-5xl px-4 sm:px-6">
                     <figure
-                        v-if="postImage(post.image_path)"
+                        v-if="postImage(post)"
                         class="reveal mb-6 border border-[var(--ink)] bg-[var(--paper-raised)] p-2 sm:mb-8 sm:p-3"
                     >
                         <img
-                            :src="postImage(post.image_path)"
+                            :src="postImage(post)"
                             :alt="tr(post.title)"
                             class="aspect-[16/9] w-full object-cover object-center"
                         />
@@ -178,8 +178,8 @@ const canonicalUrl = computed(() =>
                     >
                         <div class="aspect-[16/10] overflow-hidden border-b border-[var(--line)] bg-[var(--paper)]">
                             <img
-                                v-if="postImage(relatedPost.image_path)"
-                                :src="postImage(relatedPost.image_path)"
+                                v-if="postImage(relatedPost)"
+                                :src="postImage(relatedPost)"
                                 :alt="tr(relatedPost.title)"
                                 class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                                 loading="lazy"

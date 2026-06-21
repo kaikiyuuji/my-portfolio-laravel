@@ -40,7 +40,7 @@ const form = useForm({
 });
 
 const fileInput = ref(null);
-const imagePreview = ref(props.project?.image_path ? '/storage/' + props.project.image_path : null);
+const imagePreview = ref(props.project?.image_url ?? null);
 
 const handleImageChange = (e) => {
     const file = e.target.files[0];

@@ -42,7 +42,7 @@ const form = useForm({
 });
 
 const fileInput = ref(null);
-const imagePreview = ref(props.post?.image_path ? '/storage/' + props.post.image_path : null);
+const imagePreview = ref(props.post?.image_url ?? null);
 const contentLocale = ref('pt');
 
 const handleImageChange = (e) => {
