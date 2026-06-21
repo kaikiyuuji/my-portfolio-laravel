@@ -23,29 +23,21 @@ const { t, tm } = useI18n();
 const { tr } = useTranslatable();
 useScrollReveal('.reveal');
 
-const projectImage = (path) => (path ? '/storage/' + path : null);
+const postImage = (path) => (path ? `/storage/${path}` : null);
 
 function formatDate(iso) {
     if (!iso) return '';
     const months = tm('months');
-    const d = new Date(iso);
-    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    const date = new Date(iso);
+    return `${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-function readingTime(body) {
-    const text = tr(body) || '';
-    const words = text.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
-    return Math.max(1, Math.ceil(words / 220));
-}
-
-// Render pipeline: tr() picks locale → marked() converts Markdown to HTML
-// (raw HTML in source passes through) → DOMPurify strips scripts/event handlers
-// before injection via v-html. Defense-in-depth against compromised admin account.
 marked.setOptions({ gfm: true, breaks: false });
 
 const sanitizedBody = computed(() => {
     const raw = tr(props.post.body) || '';
     const html = marked.parse(raw);
+
     return DOMPurify.sanitize(html, {
         USE_PROFILES: { html: true },
         FORBID_TAGS: ['style', 'iframe', 'form', 'object', 'embed'],
@@ -57,11 +49,15 @@ const ogTitle = computed(() => tr(props.post.title));
 const ogDescription = computed(() => {
     const excerpt = tr(props.post.excerpt);
     if (excerpt) return excerpt;
-    const plain = (tr(props.post.body) || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-    return plain.slice(0, 160);
+
+    return (tr(props.post.body) || '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 160);
 });
 const ogImage = computed(() => {
-    const path = projectImage(props.post.image_path);
+    const path = postImage(props.post.image_path);
     if (!path) return null;
     if (typeof window === 'undefined') return path;
     return new URL(path, window.location.origin).toString();
@@ -89,94 +85,116 @@ const canonicalUrl = computed(() =>
 
     <PublicLayout :profile-name="t('blog.title')">
         <article>
-            <!-- Hero -->
-            <header class="relative overflow-hidden border-b border-black/10 dark:border-white/10">
-                <div class="grid-bg absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]"></div>
-                <div class="relative mx-auto max-w-3xl px-6 py-16 md:py-24">
-                    <Link
-                        :href="route('blog.index')"
-                        class="reveal mb-6 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
-                    >
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        {{ t('blog.backToList') }}
-                    </Link>
+            <header class="relative overflow-hidden border-b border-[var(--line)]">
+                <div class="absolute inset-y-0 right-0 hidden w-[24%] border-l border-[var(--line)] lg:block">
+                    <div class="dot-field h-full w-full"></div>
+                </div>
 
-                    <div class="reveal reveal-delay-1 mb-4 flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-wider text-black/55 dark:text-white/55">
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-black px-3 py-1 text-white dark:bg-white dark:text-black">
-                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {{ formatDate(post.published_at || post.created_at) }}
-                        </span>
-                        <span>{{ readingTime(post.body) }} min</span>
+                <div class="relative mx-auto grid max-w-7xl border-x border-[var(--line)] lg:grid-cols-12">
+                    <div class="px-5 py-12 sm:px-8 sm:py-16 lg:col-span-9 lg:px-12 lg:py-20">
+                        <Link
+                            :href="route('blog.index')"
+                            class="technical-label reveal inline-flex items-center gap-2 border border-[var(--line)] bg-[var(--paper-raised)] px-3 py-2 text-[var(--ink)] transition-all hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                        >
+                            <span aria-hidden="true">←</span>
+                            {{ t('blog.backToList') }}
+                        </Link>
+
+                        <div class="reveal reveal-delay-1 mt-8 flex flex-wrap items-center gap-3 font-mono text-[9px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                            <span class="text-[var(--accent)]">■</span>
+                            <span class="border border-[var(--ink)] bg-[var(--ink)] px-3 py-2 text-[var(--paper)]">
+                                {{ formatDate(post.published_at || post.created_at) }}
+                            </span>
+                        </div>
+
+                        <h1 class="reveal reveal-delay-2 mt-7 max-w-5xl text-4xl font-semibold leading-[0.96] tracking-[-0.06em] sm:text-6xl lg:text-7xl">
+                            {{ tr(post.title) }}
+                        </h1>
+
+                        <p
+                            v-if="tr(post.excerpt)"
+                            class="reveal reveal-delay-3 mt-7 max-w-3xl text-base leading-8 text-[var(--muted)] sm:text-lg"
+                        >
+                            {{ tr(post.excerpt) }}
+                        </p>
                     </div>
 
-                    <h1 class="reveal reveal-delay-2 mb-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-6xl">
-                        <span class="text-gradient-mono">{{ tr(post.title) }}</span>
-                    </h1>
-
-                    <p
-                        v-if="tr(post.excerpt)"
-                        class="reveal reveal-delay-3 text-lg leading-relaxed text-black/70 dark:text-white/70"
-                    >
-                        {{ tr(post.excerpt) }}
-                    </p>
+                    <aside class="blueprint-grid relative hidden border-l border-[var(--ink)] lg:col-span-3 lg:block">
+                        <span class="absolute left-7 top-7 font-mono text-6xl font-light">A</span>
+                        <div class="absolute bottom-7 right-7 text-right">
+                            <p class="font-mono text-[10px] font-bold uppercase tracking-[0.18em]">{{ t('blog.articleFile') }}</p>
+                            <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/70">01 / {{ t('blog.read') }}</p>
+                        </div>
+                    </aside>
                 </div>
             </header>
 
-            <!-- Cover -->
-            <div v-if="projectImage(post.image_path)" class="reveal mx-auto max-w-4xl px-6 py-8">
-                <div class="overflow-hidden rounded-3xl border border-black/10 dark:border-white/10">
-                    <img
-                        :src="projectImage(post.image_path)"
-                        :alt="tr(post.title)"
-                        class="aspect-[16/9] w-full object-cover object-center"
-                    />
-                </div>
-            </div>
+            <div class="portfolio-section py-8 sm:py-12">
+                <div class="relative mx-auto max-w-5xl px-4 sm:px-6">
+                    <figure
+                        v-if="postImage(post.image_path)"
+                        class="reveal mb-6 border border-[var(--ink)] bg-[var(--paper-raised)] p-2 sm:mb-8 sm:p-3"
+                    >
+                        <img
+                            :src="postImage(post.image_path)"
+                            :alt="tr(post.title)"
+                            class="aspect-[16/9] w-full object-cover object-center"
+                        />
+                        <figcaption class="flex items-center justify-between px-1 pb-1 pt-3">
+                            <span class="technical-label">{{ t('blog.coverImage') }}</span>
+                            <span class="technical-label text-[var(--accent)]">Fig. 01</span>
+                        </figcaption>
+                    </figure>
 
-            <!-- Body -->
-            <div class="mx-auto max-w-3xl px-6 py-12">
-                <div
-                    class="reveal prose-blog text-base leading-7 text-black/85 dark:text-white/85"
-                    v-html="sanitizedBody"
-                ></div>
+                    <div class="blog-paper reveal border border-[var(--line)] bg-[var(--paper-raised)] px-5 py-9 shadow-[8px_8px_0_color-mix(in_srgb,var(--accent)_16%,transparent)] sm:px-10 sm:py-12 lg:px-16">
+                        <div
+                            class="prose-blog text-base leading-8 text-[var(--ink)]"
+                            v-html="sanitizedBody"
+                        ></div>
+                    </div>
+                </div>
             </div>
         </article>
 
-        <!-- Related -->
-        <section v-if="related.length" class="border-t border-black/10 bg-neutral-50 py-20 dark:border-white/10 dark:bg-neutral-950">
-            <div class="mx-auto max-w-6xl px-6">
-                <h2 class="reveal mb-10 text-center text-2xl font-black tracking-tight sm:text-3xl">
-                    {{ t('blog.related') }}
-                </h2>
-                <div class="grid gap-6 md:grid-cols-3">
+        <section v-if="related.length" class="portfolio-section py-16 sm:py-20">
+            <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-8 flex items-end justify-between border-b border-[var(--line)] pb-5">
+                    <div>
+                        <p class="technical-label mb-3 text-[var(--accent)]">{{ t('blog.related') }} / 03</p>
+                        <h2 class="text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
+                            {{ t('blog.related') }}
+                        </h2>
+                    </div>
+                    <span class="hidden font-mono text-3xl font-light text-[var(--accent)] sm:block">↘</span>
+                </div>
+
+                <div class="grid border-l border-t border-[var(--line)] md:grid-cols-3">
                     <Link
-                        v-for="(rel, i) in related"
-                        :key="rel.id"
-                        :href="route('blog.show', rel.slug)"
-                        class="reveal group flex flex-col overflow-hidden rounded-2xl border border-black/10 bg-white transition-all duration-500 hover:-translate-y-1 hover:border-black hover:shadow-xl dark:border-white/10 dark:bg-black dark:hover:border-white"
-                        :class="`reveal-delay-${(i % 3) + 1}`"
+                        v-for="(relatedPost, index) in related"
+                        :key="relatedPost.id"
+                        :href="route('blog.show', relatedPost.slug)"
+                        class="reveal group flex flex-col border-b border-r border-[var(--line)] bg-[var(--paper-raised)] transition-all duration-300 hover:z-10 hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-[6px_6px_0_var(--accent)]"
+                        :class="`reveal-delay-${(index % 3) + 1}`"
                     >
-                        <div class="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <div class="aspect-[16/10] overflow-hidden border-b border-[var(--line)] bg-[var(--paper)]">
                             <img
-                                v-if="projectImage(rel.image_path)"
-                                :src="projectImage(rel.image_path)"
-                                :alt="tr(rel.title)"
-                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                v-if="postImage(relatedPost.image_path)"
+                                :src="postImage(relatedPost.image_path)"
+                                :alt="tr(relatedPost.title)"
+                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                                 loading="lazy"
                             />
-                            <div v-else class="flex h-full w-full items-center justify-center text-5xl font-black text-black/15 dark:text-white/15">
-                                {{ tr(rel.title).charAt(0) }}
+                            <div v-else class="dot-field grid h-full place-items-center">
+                                <span class="text-5xl font-medium text-[var(--accent)]">
+                                    {{ tr(relatedPost.title).charAt(0) }}
+                                </span>
                             </div>
                         </div>
                         <div class="flex flex-1 flex-col p-5">
-                            <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-black/50 dark:text-white/50">
-                                {{ formatDate(rel.published_at || rel.created_at) }}
-                            </p>
-                            <h3 class="text-lg font-black tracking-tight">{{ tr(rel.title) }}</h3>
+                            <p class="technical-label mb-3">{{ formatDate(relatedPost.published_at || relatedPost.created_at) }}</p>
+                            <h3 class="text-lg font-semibold leading-tight tracking-[-0.035em] transition-colors group-hover:text-[var(--accent)]">
+                                {{ tr(relatedPost.title) }}
+                            </h3>
                         </div>
                     </Link>
                 </div>
@@ -186,21 +204,124 @@ const canonicalUrl = computed(() =>
 </template>
 
 <style scoped>
-.prose-blog :deep(h1) { font-size: 2rem; font-weight: 800; margin-top: 2rem; margin-bottom: 1rem; letter-spacing: -0.02em; }
-.prose-blog :deep(h2) { font-size: 1.6rem; font-weight: 800; margin-top: 1.75rem; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
-.prose-blog :deep(h3) { font-size: 1.3rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-.prose-blog :deep(p) { margin-bottom: 1rem; }
-.prose-blog :deep(a) { color: inherit; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
-.prose-blog :deep(ul), .prose-blog :deep(ol) { margin: 1rem 0; padding-left: 1.5rem; }
-.prose-blog :deep(ul) { list-style: disc; }
-.prose-blog :deep(ol) { list-style: decimal; }
-.prose-blog :deep(li) { margin-bottom: 0.25rem; }
-.prose-blog :deep(blockquote) { border-left: 3px solid currentColor; padding-left: 1rem; margin: 1.25rem 0; font-style: italic; opacity: 0.8; }
-.prose-blog :deep(code) { background: rgba(0,0,0,0.06); padding: 0.15rem 0.4rem; border-radius: 0.375rem; font-size: 0.9em; }
-:global(.dark) .prose-blog :deep(code) { background: rgba(255,255,255,0.1); }
-.prose-blog :deep(pre) { background: #000; color: #fff; padding: 1rem 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin: 1.25rem 0; font-size: 0.875rem; }
-:global(.dark) .prose-blog :deep(pre) { background: #fff; color: #000; }
-.prose-blog :deep(pre code) { background: transparent; padding: 0; color: inherit; }
-.prose-blog :deep(img) { border-radius: 1rem; margin: 1.5rem 0; }
-.prose-blog :deep(hr) { border: none; border-top: 1px solid currentColor; opacity: 0.15; margin: 2rem 0; }
+.blog-paper {
+    color-scheme: light dark;
+}
+
+.prose-blog :deep(h1) {
+    margin: 2.5rem 0 1rem;
+    font-size: 2.15rem;
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.prose-blog :deep(h2) {
+    margin: 2.25rem 0 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+    font-size: 1.65rem;
+    font-weight: 650;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+}
+
+.prose-blog :deep(h3) {
+    margin: 1.75rem 0 0.65rem;
+    font-size: 1.3rem;
+    font-weight: 650;
+}
+
+.prose-blog :deep(p) {
+    margin-bottom: 1.25rem;
+}
+
+.prose-blog :deep(a) {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+
+.prose-blog :deep(ul),
+.prose-blog :deep(ol) {
+    margin: 1.25rem 0;
+    padding-left: 1.5rem;
+}
+
+.prose-blog :deep(ul) { list-style: square; }
+.prose-blog :deep(ol) { list-style: decimal-leading-zero; }
+.prose-blog :deep(li) { margin-bottom: 0.45rem; padding-left: 0.25rem; }
+.prose-blog :deep(li::marker) { color: var(--accent); font-family: monospace; }
+
+.prose-blog :deep(blockquote) {
+    margin: 1.75rem 0;
+    border-left: 4px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--paper-raised));
+    padding: 1rem 1.25rem;
+    font-style: normal;
+}
+
+.prose-blog :deep(code) {
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--ink) 7%, var(--paper-raised));
+    padding: 0.15rem 0.4rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+}
+
+.prose-blog :deep(pre) {
+    margin: 1.75rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    background: #0d0e12;
+    color: #f4f2ea;
+    padding: 1.25rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.prose-blog :deep(pre code) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+.prose-blog :deep(img) {
+    margin: 1.75rem 0;
+    width: 100%;
+    border: 1px solid var(--line);
+}
+
+.prose-blog :deep(hr) {
+    margin: 2.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+}
+
+.prose-blog :deep(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 1.75rem 0;
+}
+
+.prose-blog :deep(th),
+.prose-blog :deep(td) {
+    border: 1px solid var(--line);
+    padding: 0.65rem 0.8rem;
+    text-align: left;
+}
+
+.prose-blog :deep(th) {
+    background: color-mix(in srgb, var(--ink) 7%, var(--paper-raised));
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
 </style>

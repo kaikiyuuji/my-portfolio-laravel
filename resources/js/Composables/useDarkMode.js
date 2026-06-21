@@ -1,37 +1,42 @@
-import { ref, watchEffect } from 'vue';
+import { ref } from 'vue';
 
 const STORAGE_KEY = 'portfolio-theme';
 const isDark = ref(false);
 let initialized = false;
 
 function applyTheme(dark) {
-    const root = document.documentElement;
-    if (dark) {
-        root.classList.add('dark');
-    } else {
-        root.classList.remove('dark');
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('dark', dark);
+}
+
+function persistTheme() {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(STORAGE_KEY, isDark.value ? 'dark' : 'light');
+    } catch {
+        // Theme toggling should still work when storage is blocked.
     }
 }
 
 function initialize() {
-    if (initialized || typeof window === 'undefined') return;
-    initialized = true;
+    if (typeof window === 'undefined') return;
 
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'dark') {
-        isDark.value = true;
-    } else if (stored === 'light') {
-        isDark.value = false;
-    } else {
-        isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (!initialized) {
+        let stored = null;
+        try {
+            stored = localStorage.getItem(STORAGE_KEY);
+        } catch {
+            // Fall back to the operating-system preference.
+        }
+
+        isDark.value = stored === 'dark'
+            || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        initialized = true;
     }
 
-    watchEffect(() => {
-        applyTheme(isDark.value);
-        if (initialized) {
-            localStorage.setItem(STORAGE_KEY, isDark.value ? 'dark' : 'light');
-        }
-    });
+    // PublicLayout can be remounted during Inertia navigation. Always reapply
+    // the singleton state instead of relying on a component-scoped watcher.
+    applyTheme(isDark.value);
 }
 
 export function useDarkMode() {
@@ -39,6 +44,8 @@ export function useDarkMode() {
 
     function toggle() {
         isDark.value = !isDark.value;
+        applyTheme(isDark.value);
+        persistTheme();
     }
 
     return { isDark, toggle };

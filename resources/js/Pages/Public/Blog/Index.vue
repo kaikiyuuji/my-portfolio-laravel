@@ -18,27 +18,21 @@ const { tr } = useTranslatable();
 useScrollReveal('.reveal');
 
 const items = computed(() => props.posts.data ?? []);
-
 const ogTitle = computed(() => t('blog.title'));
 const ogDescription = computed(() => t('meta.blogIndexDescription'));
 const canonicalUrl = computed(() =>
     typeof window !== 'undefined' ? window.location.origin + window.location.pathname : null,
 );
 
-const projectImage = (path) => (path ? '/storage/' + path : null);
+const postImage = (path) => (path ? `/storage/${path}` : null);
 
 function formatDate(iso) {
     if (!iso) return '';
     const months = tm('months');
-    const d = new Date(iso);
-    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    const date = new Date(iso);
+    return `${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-function readingTime(body) {
-    const text = tr(body) || '';
-    const words = text.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
-    return Math.max(1, Math.ceil(words / 220));
-}
 </script>
 
 <template>
@@ -55,79 +49,88 @@ function readingTime(body) {
     </Head>
 
     <PublicLayout :profile-name="t('blog.title')">
-        <!-- Header -->
-        <section class="relative overflow-hidden border-b border-black/10 bg-neutral-50 dark:border-white/10 dark:bg-neutral-950">
-            <div class="grid-bg absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"></div>
-            <div class="relative mx-auto max-w-5xl px-6 py-20 text-center md:py-28">
-                <p class="reveal mb-3 text-xs font-bold uppercase tracking-[0.3em] text-black/50 dark:text-white/50">
-                    {{ t('blog.label') }}
-                </p>
-                <h1 class="reveal reveal-delay-1 mb-4 text-5xl font-black tracking-tight sm:text-6xl">
-                    <span class="text-gradient-mono">{{ t('blog.title') }}</span>
-                </h1>
-                <p class="reveal reveal-delay-2 mx-auto max-w-2xl text-base text-black/65 dark:text-white/65">
-                    {{ t('blog.subtitle') }}
-                </p>
+        <section class="relative overflow-hidden border-b border-[var(--line)]">
+            <div class="blueprint-grid absolute inset-y-0 right-0 hidden w-[30%] border-l border-[var(--ink)] lg:block"></div>
+            <div class="relative mx-auto grid max-w-7xl border-x border-[var(--line)] lg:grid-cols-12">
+                <div class="px-5 py-16 sm:px-8 sm:py-20 lg:col-span-8 lg:px-12 lg:py-28">
+                    <p class="technical-label reveal mb-5 text-[var(--accent)]">
+                        01 / {{ t('blog.label') }}
+                    </p>
+                    <h1 class="reveal reveal-delay-1 text-6xl font-medium leading-[0.84] tracking-[-0.075em] sm:text-8xl lg:text-9xl">
+                        {{ t('blog.title') }}
+                    </h1>
+                    <p class="reveal reveal-delay-2 mt-8 max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg">
+                        {{ t('blog.subtitle') }}
+                    </p>
+                </div>
+
+                <div class="dot-field-muted relative min-h-36 border-t border-[var(--line)] sm:min-h-44 lg:col-span-4 lg:min-h-56 lg:border-l lg:border-t-0">
+                    <span class="absolute left-5 top-5 border border-[var(--line)] bg-[var(--paper-raised)] px-2 py-1 font-mono text-lg font-semibold text-[var(--accent)] sm:text-2xl lg:left-6 lg:top-6 lg:border-0 lg:bg-transparent lg:p-0 lg:text-5xl lg:font-light">B</span>
+                    <div class="absolute bottom-4 right-4 border border-[var(--ink)] bg-[var(--paper-raised)] px-3 py-2 text-right shadow-[3px_3px_0_var(--accent)] sm:bottom-5 sm:right-5 lg:bottom-6 lg:right-6 lg:px-4 lg:py-3 lg:shadow-[5px_5px_0_var(--accent)]">
+                        <p class="technical-label text-[var(--ink)]">{{ t('blog.journalIndex') }}</p>
+                        <p class="technical-label mt-1">{{ String(items.length).padStart(2, '0') }} {{ t('blog.entries') }}</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Listing -->
-        <section class="py-20">
-            <div class="mx-auto max-w-6xl px-6">
-                <div v-if="items.length" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <section class="portfolio-section py-16 sm:py-24">
+            <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div v-if="items.length" class="grid border-l border-t border-[var(--line)] md:grid-cols-2 lg:grid-cols-12">
                     <Link
-                        v-for="(post, i) in items"
+                        v-for="(post, index) in items"
                         :key="post.id"
                         :href="route('blog.show', post.slug)"
-                        class="reveal group flex flex-col overflow-hidden rounded-3xl border border-black/10 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-black hover:shadow-2xl dark:border-white/10 dark:bg-black dark:hover:border-white"
-                        :class="`reveal-delay-${(i % 4) + 1}`"
+                        class="reveal group flex min-h-full flex-col border-b border-r border-[var(--line)] bg-[var(--paper-raised)] transition-all duration-300 hover:z-10 hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-[7px_7px_0_var(--accent)]"
+                        :class="[
+                            `reveal-delay-${(index % 4) + 1}`,
+                            index % 3 === 0 ? 'lg:col-span-7' : 'lg:col-span-5',
+                        ]"
                     >
-                        <div class="relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <div class="relative aspect-[16/9] overflow-hidden border-b border-[var(--line)] bg-[var(--paper)]">
                             <img
-                                v-if="projectImage(post.image_path)"
-                                :src="projectImage(post.image_path)"
+                                v-if="postImage(post.image_path)"
+                                :src="postImage(post.image_path)"
                                 :alt="tr(post.title)"
-                                class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                                class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.025]"
                                 loading="lazy"
                             />
-                            <div
-                                v-else
-                                class="flex h-full w-full items-center justify-center text-6xl font-black text-black/15 dark:text-white/15"
-                            >
-                                {{ tr(post.title).charAt(0) }}
+                            <div v-else class="dot-field grid h-full place-items-center">
+                                <span class="text-7xl font-medium tracking-[-0.08em] text-[var(--accent)]">
+                                    {{ tr(post.title).charAt(0) }}
+                                </span>
                             </div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                            <span class="absolute left-3 top-3 border border-[var(--ink)] bg-[var(--paper-raised)] px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest">
+                                {{ t('blog.entry') }} {{ String(index + 1).padStart(2, '0') }}
+                            </span>
                         </div>
-                        <div class="flex flex-1 flex-col p-6">
-                            <div class="mb-3 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-black/50 dark:text-white/50">
+
+                        <div class="flex flex-1 flex-col p-5 sm:p-7">
+                            <div class="mb-5 flex flex-wrap items-center gap-3 font-mono text-[9px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                                <span class="text-[var(--accent)]">■</span>
                                 <span>{{ formatDate(post.published_at || post.created_at) }}</span>
-                                <span class="text-black/20 dark:text-white/20">·</span>
-                                <span>{{ readingTime(post.body) }} min</span>
                             </div>
-                            <h2 class="mb-2 text-2xl font-black tracking-tight transition-colors group-hover:text-black dark:group-hover:text-white">
+                            <h2 class="text-2xl font-semibold leading-[1.05] tracking-[-0.045em] transition-colors group-hover:text-[var(--accent)] sm:text-3xl">
                                 {{ tr(post.title) }}
                             </h2>
-                            <p v-if="tr(post.excerpt)" class="flex-1 text-sm leading-relaxed text-black/65 dark:text-white/65">
+                            <p v-if="tr(post.excerpt)" class="mt-5 flex-1 text-sm leading-7 text-[var(--muted)]">
                                 {{ tr(post.excerpt) }}
                             </p>
-                            <span class="mt-5 inline-flex items-center gap-1 text-sm font-bold transition-transform group-hover:translate-x-1">
+                            <span class="mt-7 flex items-center justify-between border-t border-[var(--line)] pt-4 font-mono text-[10px] font-bold uppercase tracking-wider">
                                 {{ t('blog.readMore') }}
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
+                                <span class="text-lg text-[var(--accent)] transition-transform group-hover:translate-x-1">→</span>
                             </span>
                         </div>
                     </Link>
                 </div>
 
-                <div v-else class="reveal py-24 text-center">
-                    <p class="text-lg font-semibold text-black/60 dark:text-white/60">{{ t('blog.empty') }}</p>
+                <div v-else class="reveal border border-[var(--line)] bg-[var(--paper-raised)] px-6 py-24 text-center">
+                    <p class="technical-label text-[var(--ink)]">{{ t('blog.empty') }}</p>
                 </div>
 
-                <!-- Pagination -->
                 <nav
                     v-if="items.length && posts.last_page > 1"
-                    class="reveal mt-16 flex items-center justify-center gap-2"
+                    class="reveal mt-12 flex flex-wrap items-center justify-center gap-2"
                     aria-label="Paginação"
                 >
                     <template v-for="link in posts.links" :key="link.label">
@@ -135,17 +138,17 @@ function readingTime(body) {
                             v-if="link.url"
                             :href="link.url"
                             v-html="link.label"
-                            class="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-bold transition-all"
+                            class="grid min-h-10 min-w-10 place-items-center border px-3 font-mono text-[10px] font-bold uppercase transition-all"
                             :class="link.active
-                                ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
-                                : 'border-black/15 bg-white hover:border-black dark:border-white/15 dark:bg-black dark:hover:border-white'"
+                                ? 'border-[var(--accent)] bg-[var(--accent)] text-white'
+                                : 'border-[var(--line)] bg-[var(--paper-raised)] hover:border-[var(--ink)]'"
                             :preserve-scroll="true"
                             :aria-current="link.active ? 'page' : undefined"
                         />
                         <span
                             v-else
                             v-html="link.label"
-                            class="inline-flex cursor-not-allowed items-center justify-center rounded-full border border-black/5 bg-white/50 px-4 py-2 text-sm font-bold text-black/30 dark:border-white/5 dark:bg-black/50 dark:text-white/30"
+                            class="grid min-h-10 min-w-10 cursor-not-allowed place-items-center border border-[var(--line)] bg-[var(--paper)] px-3 font-mono text-[10px] font-bold text-[var(--muted)] opacity-45"
                             aria-disabled="true"
                         />
                     </template>
