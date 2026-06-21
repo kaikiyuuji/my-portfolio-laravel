@@ -67,4 +67,62 @@ defineProps({
         <circle cx="18" cy="18" r="3" />
         <path d="m8.6 10.5 6.8-3M8.6 13.5l6.8 3" />
     </svg>
+
+    <svg
+        v-else-if="name === 'experience'"
+        class="admin-nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+    >
+        <path d="M9 4h6l1 3h4v13H4V7h4z" />
+        <path d="M9 7h6M8 12h8M8 16h5" />
+    </svg>
+
+    <svg
+        v-else-if="name === 'blog'"
+        class="admin-nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+    >
+        <path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" />
+    </svg>
+
+    <svg
+        v-else-if="name === 'external'"
+        class="admin-nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+    >
+        <path d="M14 4h6v6M20 4l-9 9" />
+        <path d="M18 13v7H4V6h7" />
+    </svg>
+
+    <svg
+        v-else-if="name === 'settings'"
+        class="admin-nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+    >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
+    </svg>
+
+    <svg
+        v-else-if="name === 'logout'"
+        class="admin-nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+    >
+        <path d="M10 4H4v16h6M14 8l4 4-4 4M8 12h10" />
+    </svg>
 </template>

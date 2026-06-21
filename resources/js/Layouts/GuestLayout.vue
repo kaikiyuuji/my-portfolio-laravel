@@ -1,26 +1,77 @@
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import { useArcadeSound } from '@/Composables/useArcadeSound';
+import { useDarkMode } from '@/Composables/useDarkMode';
 import { Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const authRoot = ref(null);
+const { isDark, toggle } = useDarkMode();
+const { soundEnabled, toggleSound } = useArcadeSound(authRoot, {
+    storageKey: 'portfolio-arcade-sound',
+});
 </script>
 
 <template>
-    <div
-        class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0"
-    >
-        <div>
-            <Link href="/" class="group flex justify-center">
-                <img
-                    src="/logo.png"
-                    alt="Logo"
-                    class="h-20 w-20 transition-transform duration-300 group-hover:rotate-12"
-                />
-            </Link>
-        </div>
+    <div ref="authRoot" class="pixel-auth">
+        <div class="pixel-auth__stars" aria-hidden="true"></div>
 
-        <div
-            class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg"
-        >
-            <slot />
-        </div>
+        <header class="pixel-auth__topbar">
+            <Link :href="route('home')" class="pixel-auth__brand">
+                <span class="pixel-auth__logo">
+                    <img src="/favicon.ico" alt="" width="30" height="30" />
+                </span>
+                <span>
+                    <strong>PORTFOLIO.EXE</strong>
+                    <small>SECURE ACCESS</small>
+                </span>
+            </Link>
+
+            <div class="pixel-auth__controls">
+                <button
+                    type="button"
+                    :title="isDark ? 'Modo claro' : 'Modo escuro'"
+                    :aria-label="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'"
+                    @click="toggle"
+                >
+                    {{ isDark ? '☀' : '◐' }}
+                </button>
+                <button
+                    type="button"
+                    data-sound-toggle
+                    :aria-pressed="soundEnabled"
+                    :title="soundEnabled ? 'Desativar sons' : 'Ativar sons'"
+                    @click.stop="toggleSound"
+                >
+                    {{ soundEnabled ? '♪' : '×' }}
+                </button>
+            </div>
+        </header>
+
+        <main class="pixel-auth__main">
+            <section class="pixel-auth__intro" aria-hidden="true">
+                <p>// ADMIN TERMINAL</p>
+                <div class="pixel-auth__terminal">
+                    <span>&gt; INICIANDO SISTEMA...</span>
+                    <span>&gt; PORTFOLIO ONLINE</span>
+                    <span>&gt; CANAL SEGURO: ATIVO</span>
+                    <strong>&gt; AGUARDANDO LOGIN_</strong>
+                </div>
+                <div class="pixel-auth__shield">
+                    <span></span>
+                </div>
+                <div class="pixel-auth__levels">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+            </section>
+
+            <section class="pixel-auth__card">
+                <slot />
+            </section>
+        </main>
+
+        <footer class="pixel-auth__footer">
+            <span>DEV.OS // AUTH MODULE</span>
+            <Link :href="route('home')">← VOLTAR AO PORTFOLIO</Link>
+        </footer>
     </div>
 </template>

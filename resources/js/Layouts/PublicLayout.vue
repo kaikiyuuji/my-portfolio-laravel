@@ -1,8 +1,9 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { useArcadeSound } from '@/Composables/useArcadeSound';
 import { useDarkMode } from '@/Composables/useDarkMode';
 import { toggleLocale } from '@/i18n';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 defineProps({
     profileName: {
@@ -13,16 +14,20 @@ defineProps({
 
 const { t, locale } = useI18n();
 const { isDark, toggle } = useDarkMode();
+const publicRoot = ref(null);
+const { soundEnabled, toggleSound } = useArcadeSound(publicRoot, {
+    storageKey: 'portfolio-arcade-sound',
+});
 const scrolled = ref(false);
 const mobileOpen = ref(false);
 
 const navItems = computed(() => [
-    { href: '/#sobre', label: t('nav.about') },
-    { href: '/#stacks', label: t('nav.stacks') },
-    { href: '/#experiencia', label: t('nav.experience') },
-    { href: '/#projetos', label: t('nav.projects') },
-    { href: '/blog', label: t('nav.blog') },
-    { href: '/#contato', label: t('nav.contact') },
+    { href: '/#sobre', label: t('nav.about'), code: '01' },
+    { href: '/#stacks', label: t('nav.stacks'), code: '02' },
+    { href: '/#experiencia', label: t('nav.experience'), code: '03' },
+    { href: '/#projetos', label: t('nav.projects'), code: '04' },
+    { href: '/#contato', label: t('nav.contact'), code: '05' },
+    { href: '/blog', label: t('nav.blog'), code: '06' },
 ]);
 
 function handleScroll() {
@@ -44,111 +49,118 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-white text-black transition-colors duration-500 dark:bg-black dark:text-white">
-        <!-- Sticky Header -->
-        <header
-            class="fixed inset-x-0 top-0 z-50 transition-all duration-500"
-            :class="scrolled
-                ? 'border-b border-black/10 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-black/70'
-                : 'border-b border-transparent bg-transparent'"
-        >
-            <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-                <a href="#topo" class="group flex items-center gap-2 font-black tracking-tight">
-                    <img
-                        src="/logo.png"
-                        alt="Logo"
-                        class="h-9 w-9 transition-transform duration-300 group-hover:rotate-12"
-                    />
-                    <span class="hidden text-lg sm:inline">{{ profileName }}</span>
+    <div
+        ref="publicRoot"
+        class="pixel-public min-h-screen"
+        :class="{ 'pixel-public--scrolled': scrolled }"
+    >
+        <div class="pixel-public__scanlines" aria-hidden="true"></div>
+        <div class="pixel-public__ambient" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <header class="pixel-public-nav">
+            <div class="pixel-public-nav__inner">
+                <a href="/#topo" class="pixel-public-brand" aria-label="Ir para o início">
+                    <span class="pixel-public-brand__sprite" aria-hidden="true">
+                        <img src="/favicon.ico" alt="" width="28" height="28" />
+                    </span>
+                    <span class="pixel-public-brand__copy">
+                        <strong>{{ profileName }}</strong>
+                        <small>PORTFOLIO.EXE</small>
+                    </span>
                 </a>
 
-                <nav class="hidden items-center gap-1 md:flex">
+                <nav class="pixel-public-links" aria-label="Navegação principal">
                     <a
                         v-for="item in navItems"
                         :key="item.href"
                         :href="item.href"
-                        class="relative rounded-full px-4 py-2 text-sm font-semibold text-black/70 transition-colors hover:text-black dark:text-white/70 dark:hover:text-white"
                     >
-                        <span class="relative z-10">{{ item.label }}</span>
-                        <span class="absolute inset-0 scale-0 rounded-full bg-black/5 transition-transform duration-300 hover:scale-100 dark:bg-white/10"></span>
+                        <small>{{ item.code }}</small>
+                        <span>{{ item.label }}</span>
                     </a>
                 </nav>
 
-                <div class="flex items-center gap-2">
+                <div class="pixel-public-actions">
                     <button
                         type="button"
-                        @click="toggleLocale"
-                        class="group flex h-10 items-center gap-1.5 rounded-full border border-black/15 bg-white px-3 text-xs font-bold uppercase tracking-wider text-black transition-all hover:scale-105 hover:border-black active:scale-95 dark:border-white/20 dark:bg-black dark:text-white dark:hover:border-white"
+                        class="pixel-public-control pixel-public-control--locale"
                         :aria-label="t('a11y.toggleLocale')"
+                        @click="toggleLocale"
                     >
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m6.06 13H21M12 21l3.06-7L18 21M3 12h7m-3.5-2v2c0 3.5-2 5.5-3.5 6" />
-                        </svg>
-                        <span>{{ locale === 'pt' ? 'PT' : 'EN' }}</span>
+                        <span>文</span>
+                        <b>{{ locale === 'pt' ? 'PT' : 'EN' }}</b>
                     </button>
 
                     <button
                         type="button"
-                        @click="toggle"
-                        class="group relative flex h-10 w-10 items-center justify-center rounded-full border border-black/15 bg-white text-black transition-all hover:scale-110 hover:border-black active:scale-95 dark:border-white/20 dark:bg-black dark:text-white dark:hover:border-white"
+                        class="pixel-public-control"
                         :aria-label="isDark ? t('a11y.toggleTheme.dark') : t('a11y.toggleTheme.light')"
+                        :title="isDark ? 'Modo claro' : 'Modo escuro'"
+                        @click="toggle"
                     >
-                        <svg v-if="isDark" class="h-5 w-5 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="4" />
-                            <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-                        </svg>
-                        <svg v-else class="h-5 w-5 transition-transform group-hover:-rotate-12" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
-                        </svg>
+                        <span aria-hidden="true">{{ isDark ? '☀' : '◐' }}</span>
                     </button>
 
                     <button
                         type="button"
-                        @click="mobileOpen = !mobileOpen"
-                        class="flex h-10 w-10 items-center justify-center rounded-full border border-black/15 bg-white text-black md:hidden dark:border-white/20 dark:bg-black dark:text-white"
-                        :aria-label="t('a11y.menu')"
+                        class="pixel-public-control"
+                        data-sound-toggle
+                        :aria-pressed="soundEnabled"
+                        :title="soundEnabled ? 'Desativar sons' : 'Ativar sons'"
+                        @click.stop="toggleSound"
                     >
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path v-if="!mobileOpen" stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
-                            <path v-else stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
-                        </svg>
+                        <span aria-hidden="true">{{ soundEnabled ? '♪' : '×' }}</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="pixel-public-control pixel-public-menu-button"
+                        :aria-expanded="mobileOpen"
+                        aria-controls="public-mobile-menu"
+                        :aria-label="t('a11y.menu')"
+                        @click="mobileOpen = !mobileOpen"
+                    >
+                        <span aria-hidden="true">{{ mobileOpen ? '×' : '☰' }}</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Mobile menu -->
             <div
-                v-show="mobileOpen"
-                class="border-t border-black/10 bg-white md:hidden dark:border-white/10 dark:bg-black"
+                id="public-mobile-menu"
+                class="pixel-public-mobile-menu"
+                :class="{ 'is-open': mobileOpen }"
             >
-                <nav class="mx-auto flex max-w-6xl flex-col px-6 py-4">
+                <nav>
                     <a
                         v-for="item in navItems"
                         :key="item.href"
                         :href="item.href"
                         @click="closeMobile"
-                        class="border-b border-black/5 py-3 text-sm font-semibold text-black/80 last:border-none dark:border-white/5 dark:text-white/80"
                     >
-                        {{ item.label }}
+                        <small>{{ item.code }}</small>
+                        <span>{{ item.label }}</span>
+                        <b>▶</b>
                     </a>
                 </nav>
             </div>
         </header>
 
-        <main id="topo" class="pt-20">
+        <main id="topo" class="pixel-public-main">
             <slot />
         </main>
 
-        <!-- Back to top -->
         <a
             v-show="scrolled"
             href="#topo"
-            class="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-black bg-black text-white shadow-2xl transition-transform hover:-translate-y-1 active:scale-95 dark:border-white dark:bg-white dark:text-black"
+            class="pixel-public-top"
             :aria-label="t('a11y.backTop')"
         >
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-            </svg>
+            <span>↑</span>
+            <small>TOP</small>
         </a>
     </div>
 </template>

@@ -28,9 +28,7 @@ function iconKey(prefix, id) {
 
 function iconSources(slug) {
     return [
-        `https://cdn.simpleicons.org/${slug}/000000`,
-        `https://api.iconify.design/mdi:${slug}.svg?color=%23000000`,
-        `https://api.iconify.design/fa6-brands:${slug}.svg?color=%23000000`,
+        `https://cdn.simpleicons.org/${slug}`,
         `https://api.iconify.design/logos:${slug}.svg`,
     ];
 }
@@ -56,11 +54,6 @@ function onIconError(prefix, id, slug) {
 
 function iconHasFailed(prefix, id) {
     return failedIcons.has(iconKey(prefix, id));
-}
-
-function shouldInvertIcon(prefix, id) {
-    const idx = attemptIndex[iconKey(prefix, id)] ?? 0;
-    return idx < 3;
 }
 
 const avatarUrl = computed(() =>
@@ -126,7 +119,7 @@ function formatPeriod(start, end) {
 
             <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-[auto_1fr] md:gap-16 md:py-32">
                 <!-- Avatar -->
-                <div class="reveal mx-auto md:mx-0">
+                <div class="reveal mx-auto flex flex-col items-center md:mx-0">
                     <div class="group relative">
                         <div class="absolute -inset-3 rounded-full bg-gradient-to-tr from-black via-neutral-500 to-black opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-60 dark:from-white dark:via-neutral-300 dark:to-white"></div>
                         <div class="relative h-64 w-64 overflow-hidden rounded-full border-4 border-black bg-white shadow-2xl ring-1 ring-black/10 transition-transform duration-500 group-hover:scale-105 sm:h-80 sm:w-80 md:h-96 md:w-96 dark:border-white dark:bg-black dark:ring-white/10">
@@ -144,18 +137,15 @@ function formatPeriod(start, end) {
                                 {{ initials }}
                             </div>
                         </div>
-                        <div class="absolute -right-1 bottom-4 flex h-12 w-12 animate-float items-center justify-center rounded-full border-2 border-black bg-white text-xs font-black shadow-xl dark:border-white dark:bg-black">
-                            <span class="h-3.5 w-3.5 rounded-full bg-emerald-500"></span>
-                        </div>
                     </div>
+                    <p class="pixel-public-availability mt-7 inline-flex items-center gap-2">
+                        <span aria-hidden="true"></span>
+                        {{ t('hero.available') }}
+                    </p>
                 </div>
 
                 <!-- Texto -->
                 <div class="text-center md:text-left">
-                    <p class="reveal reveal-delay-1 mb-4 inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest backdrop-blur-md dark:border-white/15 dark:bg-black/40">
-                        <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-500"></span>
-                        {{ t('hero.available') }}
-                    </p>
                     <h1 class="reveal reveal-delay-2 mb-4 text-5xl font-black leading-tight tracking-tight sm:text-6xl md:text-7xl">
                         <span class="text-gradient-mono">{{ profile.name }}</span>
                     </h1>
@@ -172,7 +162,7 @@ function formatPeriod(start, end) {
                     <div class="reveal reveal-delay-5 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                         <a
                             href="#projetos"
-                            class="group inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white transition-all hover:-translate-y-1 hover:shadow-2xl active:translate-y-0 dark:bg-white dark:text-black"
+                            class="pixel-public-primary group inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white transition-all hover:-translate-y-1 hover:shadow-2xl active:translate-y-0 dark:bg-white dark:text-black"
                         >
                             {{ t('hero.viewProjects') }}
                             <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -234,7 +224,6 @@ function formatPeriod(start, end) {
                             :src="currentIconUrl('stack', stack.id, stack.icon_slug)"
                             :alt="stack.name"
                             class="relative z-10 h-10 w-10 transition-transform duration-500 group-hover:scale-125 sm:h-12 sm:w-12"
-                            :class="{ 'dark:invert': shouldInvertIcon('stack', stack.id) }"
                             loading="lazy"
                             @error="onIconError('stack', stack.id, stack.icon_slug)"
                         />
@@ -344,7 +333,6 @@ function formatPeriod(start, end) {
                                         :src="currentIconUrl('pstack', stack.id, stack.icon_slug)"
                                         :alt="stack.name"
                                         class="h-3.5 w-3.5"
-                                        :class="{ 'dark:invert': shouldInvertIcon('pstack', stack.id) }"
                                         loading="lazy"
                                         @error="onIconError('pstack', stack.id, stack.icon_slug)"
                                     />
@@ -430,7 +418,6 @@ function formatPeriod(start, end) {
                             :src="currentIconUrl('social', link.id, link.icon_slug)"
                             :alt="link.platform"
                             class="h-5 w-5 transition-transform duration-500 group-hover:scale-110"
-                            :class="{ 'dark:invert': shouldInvertIcon('social', link.id) }"
                             loading="lazy"
                             @error="onIconError('social', link.id, link.icon_slug)"
                         />
