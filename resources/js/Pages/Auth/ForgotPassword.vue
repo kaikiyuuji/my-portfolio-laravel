@@ -23,46 +23,56 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Forgot Password" />
+        <Head title="Recuperar senha" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email
-            address and we will email you a password reset link that will allow
-            you to choose a new one.
+        <div class="pixel-login__heading">
+            <span>RECOVERY_01</span>
+            <h1>Recuperar senha</h1>
+            <p>
+                Informe seu e-mail e enviaremos um link seguro para cadastrar
+                uma nova senha.
+            </p>
         </div>
 
         <div
             v-if="status"
-            class="mb-4 text-sm font-medium text-green-600"
+            class="pixel-login__status"
         >
+            <span>●</span>
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+        <form class="pixel-login__form" @submit.prevent="submit">
+            <div class="pixel-login__field">
+                <InputLabel for="email" value="E-mail" />
+                <div class="pixel-login__input-wrap">
+                    <span aria-hidden="true">@</span>
+                    <TextInput
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        required
+                        autofocus
+                        autocomplete="username"
+                        placeholder="admin@portfolio.com"
+                    />
+                </div>
+                <InputError :message="form.errors.email" />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
-                <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
+            <PrimaryButton
+                class="pixel-login__submit"
+                :class="{ 'opacity-50': form.processing }"
+                :disabled="form.processing"
+            >
+                <span>{{ form.processing ? 'ENVIANDO...' : 'ENVIAR LINK DE ACESSO' }}</span>
+                <b aria-hidden="true">▶</b>
+            </PrimaryButton>
         </form>
+
+        <p class="pixel-login__note">
+            <span>!</span>
+            Verifique também a caixa de spam após solicitar o link.
+        </p>
     </GuestLayout>
 </template>
