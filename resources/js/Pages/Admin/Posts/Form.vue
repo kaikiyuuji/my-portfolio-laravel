@@ -5,7 +5,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
+
+const ContentEditor = defineAsyncComponent(() => import('@/Components/ContentEditor.vue'));
 
 const props = defineProps({
     post: {
@@ -41,6 +43,7 @@ const form = useForm({
 
 const fileInput = ref(null);
 const imagePreview = ref(props.post?.image_path ? '/storage/' + props.post.image_path : null);
+const contentLocale = ref('pt');
 
 const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -51,16 +54,19 @@ const handleImageChange = (e) => {
 const triggerFileInput = () => fileInput.value.click();
 
 const submit = () => {
+    const options = {
+        preserveScroll: true,
+        forceFormData: true,
+        onError: (errors) => {
+            if (errors['body.pt']) contentLocale.value = 'pt';
+            else if (errors['body.en']) contentLocale.value = 'en';
+        },
+    };
+
     if (isEditing.value) {
-        form.post(route('admin.posts.update', props.post.slug), {
-            preserveScroll: true,
-            forceFormData: true,
-        });
+        form.post(route('admin.posts.update', props.post.slug), options);
     } else {
-        form.post(route('admin.posts.store'), {
-            preserveScroll: true,
-            forceFormData: true,
-        });
+        form.post(route('admin.posts.store'), options);
     }
 };
 </script>
@@ -86,7 +92,7 @@ const submit = () => {
             </div>
         </template>
 
-        <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <form @submit.prevent="submit">
                 <div class="shadow-sm sm:overflow-hidden sm:rounded-2xl border border-slate-100 bg-white">
                     <div class="space-y-6 px-4 py-6 sm:p-8">
@@ -153,18 +159,49 @@ const submit = () => {
                                 <InputError class="mt-2" :message="form.errors['excerpt.en']" />
                             </div>
 
-                            <!-- Body PT -->
                             <div class="sm:col-span-2">
-                                <InputLabel for="body_pt" value="Conteúdo (PT) — aceita HTML/Markdown" />
-                                <textarea id="body_pt" rows="12" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 font-mono text-sm leading-6" v-model="form.body.pt" required placeholder="Conteúdo completo do post..."></textarea>
-                                <InputError class="mt-2" :message="form.errors['body.pt']" />
-                            </div>
+                                <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                                    <div>
+                                        <InputLabel value="Corpo do artigo" />
+                                        <p class="mt-1 text-xs text-slate-500">
+                                            Escreva em Markdown ou HTML e confira o resultado antes de publicar.
+                                        </p>
+                                    </div>
 
-                            <!-- Body EN -->
-                            <div class="sm:col-span-2">
-                                <InputLabel for="body_en" value="Conteúdo (EN)" />
-                                <textarea id="body_en" rows="12" class="mt-1 block w-full rounded-xl border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 font-mono text-sm leading-6" v-model="form.body.en" placeholder="Full post content..."></textarea>
-                                <InputError class="mt-2" :message="form.errors['body.en']" />
+                                    <div class="flex self-start border border-[var(--line)] bg-[var(--paper-raised)] sm:self-auto">
+                                        <button
+                                            v-for="locale in ['pt', 'en']"
+                                            :key="locale"
+                                            type="button"
+                                            class="px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                                            :class="contentLocale === locale
+                                                ? 'bg-[var(--accent)] text-white'
+                                                : 'text-[var(--muted)] hover:text-[var(--ink)]'"
+                                            @click="contentLocale = locale"
+                                        >
+                                            {{ locale === 'pt' ? 'Português' : 'English' }}
+                                            <span v-if="locale === 'pt'" class="text-red-300">*</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <ContentEditor
+                                    v-if="contentLocale === 'pt'"
+                                    id="body_pt"
+                                    v-model="form.body.pt"
+                                    label="Conteúdo em português"
+                                    required
+                                    placeholder="Escreva o conteúdo completo do artigo..."
+                                />
+                                <ContentEditor
+                                    v-else
+                                    id="body_en"
+                                    v-model="form.body.en"
+                                    label="Content in English"
+                                    placeholder="Write the complete article content..."
+                                />
+
+                                <InputError class="mt-2" :message="form.errors[`body.${contentLocale}`]" />
                             </div>
 
                             <!-- Published at -->
@@ -181,7 +218,7 @@ const submit = () => {
                                     id="is_published"
                                     type="checkbox"
                                     v-model="form.is_published"
-                                    class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                    class="h-4 w-4 rounded border-[var(--line)] bg-[var(--paper)] text-[var(--accent)] focus:ring-[var(--accent)] focus:ring-offset-[var(--paper)]"
                                 />
                                 <InputLabel for="is_published" value="Publicar (rascunho fica oculto)" />
                             </div>

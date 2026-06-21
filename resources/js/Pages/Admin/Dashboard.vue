@@ -1,6 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+
+const modules = [
+    { index: '01', title: 'Perfil', description: 'Identidade, avatar, bio e dados de contato.', route: 'admin.profile.edit', mark: 'P' },
+    { index: '02', title: 'Tecnologias', description: 'Stacks e ferramentas exibidas no portfolio.', route: 'admin.stacks.index', mark: 'T' },
+    { index: '03', title: 'Experiências', description: 'Histórico profissional e trajetória.', route: 'admin.experiences.index', mark: 'E' },
+    { index: '04', title: 'Projetos', description: 'Cases, imagens, links e tecnologias.', route: 'admin.projects.index', mark: 'W' },
+    { index: '05', title: 'Redes sociais', description: 'Canais públicos e perfis externos.', route: 'admin.social-links.index', mark: 'S' },
+    { index: '06', title: 'Blog', description: 'Artigos, capas e publicação editorial.', route: 'admin.posts.index', mark: 'B' },
+];
 </script>
 
 <template>
@@ -8,84 +17,67 @@ import { Head, Link } from '@inertiajs/vue3';
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-2xl font-bold tracking-tight text-slate-900">
-                Dashboard
-            </h2>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="technical-label mb-2 text-[var(--accent)]">00 / Overview</p>
+                    <h2 class="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">Dashboard</h2>
+                </div>
+                <p class="technical-label">Management console</p>
+            </div>
         </template>
 
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
-            <!-- Welcome Card -->
-            <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl shadow-xl shadow-indigo-500/20 p-8 sm:p-10 text-white relative overflow-hidden border border-white/10">
-                <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-10 -bottom-10 w-64 h-64 bg-violet-400/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
+            <section class="blueprint-grid relative overflow-hidden border border-[var(--ink)] p-6 sm:p-9 lg:p-12">
+                <div class="relative z-10 grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
                     <div>
-                        <h3 class="text-3xl font-extrabold mb-2 tracking-tight">Bem-vindo, {{ $page.props.auth.user.name }}!</h3>
-                        <p class="text-indigo-100/90 max-w-xl text-lg font-medium leading-relaxed">Este é o painel de controle do seu portfolio. Utilize o menu acima para gerenciar seu perfil público.</p>
+                        <p class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+                            Workspace active / {{ new Date().getFullYear() }}
+                        </p>
+                        <h3 class="mt-8 max-w-3xl text-4xl font-medium leading-[0.9] tracking-[-0.065em] text-white sm:text-6xl">
+                            Olá, {{ $page.props.auth.user.name }}.
+                        </h3>
+                        <p class="mt-6 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+                            Gerencie o conteúdo público do portfolio por módulos independentes e mantenha tudo atualizado.
+                        </p>
                     </div>
-                    <Link :href="route('admin.profile.edit')" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-xl font-semibold backdrop-blur-md transition-all border border-white/20 hover:scale-105 active:scale-95 shadow-lg">
-                        Editar Portfolio
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+
+                    <Link
+                        :href="route('admin.profile.edit')"
+                        class="inline-flex min-h-12 min-w-52 items-center justify-between border border-white bg-white px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] transition-transform hover:-translate-y-1"
+                    >
+                        Editar portfolio
+                        <span>↗</span>
                     </Link>
                 </div>
-            </div>
+            </section>
 
-            <!-- Quick Actions Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-                <!-- Profile -->
-                <Link :href="route('admin.profile.edit')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            <section class="grid border-l border-t border-[var(--line)] sm:grid-cols-2 xl:grid-cols-3">
+                <Link
+                    v-for="module in modules"
+                    :key="module.route"
+                    :href="route(module.route)"
+                    class="group relative min-h-56 overflow-hidden border-b border-r border-[var(--line)] bg-[var(--paper-raised)] p-5 transition-all duration-300 hover:z-10 hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-[7px_7px_0_var(--accent)] sm:p-6"
+                >
+                    <div class="flex items-start justify-between">
+                        <span class="font-mono text-[10px] font-bold tracking-widest text-[var(--accent)]">{{ module.index }}</span>
+                        <span class="font-mono text-xl text-[var(--accent)] transition-transform group-hover:rotate-45">×</span>
                     </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">Perfil</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Atualize seu nome, título, foto e bio.</p>
-                </Link>
 
-                <!-- Stacks -->
-                <Link :href="route('admin.stacks.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" /></svg>
+                    <div class="mt-8 flex items-end gap-5">
+                        <span class="dot-field-muted grid h-16 w-16 shrink-0 place-items-center border border-[var(--line)] text-3xl font-medium text-[var(--accent)]">
+                            {{ module.mark }}
+                        </span>
+                        <div>
+                            <h4 class="text-xl font-semibold tracking-[-0.04em] transition-colors group-hover:text-[var(--accent)]">
+                                {{ module.title }}
+                            </h4>
+                            <p class="mt-2 text-sm leading-6 text-[var(--muted)]">{{ module.description }}</p>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-emerald-600 transition-colors">Tecnologias</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Gerencie as stacks exibidas no portfolio.</p>
-                </Link>
 
-                <!-- Experiences -->
-                <Link :href="route('admin.experiences.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-amber-600 transition-colors">Experiências</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Trajetória profissional na timeline.</p>
+                    <span class="absolute bottom-4 right-5 font-mono text-lg text-[var(--accent)] transition-transform group-hover:translate-x-1">→</span>
                 </Link>
-
-                <!-- Projects -->
-                <Link :href="route('admin.projects.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-rose-600 transition-colors">Projetos</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Cards do portfolio com tecnologias e demos.</p>
-                </Link>
-
-                <!-- Social Links -->
-                <Link :href="route('admin.social-links.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-sky-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-sky-600 transition-colors">Redes Sociais</h4>
-                    <p class="text-slate-500 mt-1 text-sm">GitHub, LinkedIn e outros perfis.</p>
-                </Link>
-
-                <!-- Blog -->
-                <Link :href="route('admin.posts.index')" class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-slate-100 group">
-                    <div class="w-12 h-12 bg-fuchsia-50 text-fuchsia-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-fuchsia-600 group-hover:text-white transition-all shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-lg group-hover:text-fuchsia-600 transition-colors">Blog</h4>
-                    <p class="text-slate-500 mt-1 text-sm">Posts e artigos publicados.</p>
-                </Link>
-            </div>
+            </section>
         </div>
     </AuthenticatedLayout>
 </template>

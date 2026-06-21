@@ -173,7 +173,7 @@ const submit = () => {
                                 id="is_featured"
                                 type="checkbox"
                                 v-model="form.is_featured"
-                                class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                class="h-4 w-4 rounded border-[var(--line)] bg-[var(--paper)] text-[var(--accent)] focus:ring-[var(--accent)] focus:ring-offset-[var(--paper)]"
                             />
                             <InputLabel for="is_featured" value="Exibir em destaque na landing page" />
                             <InputError class="ml-2" :message="form.errors.is_featured" />

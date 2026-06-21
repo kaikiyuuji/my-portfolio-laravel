@@ -396,3 +396,171 @@
         transform: none;
     }
 }
+
+@layer components {
+    .auth-shell {
+        --hero-scroll-far: 0px;
+        --hero-scroll-near: 0px;
+        background-color: var(--paper);
+    }
+
+    .admin-shell {
+        min-height: 100vh;
+        background-color: var(--paper);
+        color: var(--ink);
+    }
+
+    .admin-quiet-button {
+        @apply inline-flex min-h-10 items-center justify-center border border-[var(--line)] bg-[var(--paper-raised)] px-3 font-mono text-[9px] font-bold uppercase tracking-wider text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)];
+    }
+
+    .admin-page-header h1,
+    .admin-page-header h2,
+    .admin-page-header h3 {
+        color: var(--ink) !important;
+    }
+
+    .admin-content > .mx-auto {
+        padding-inline: 1rem;
+    }
+
+    :is(.admin-shell, .auth-shell) .bg-white {
+        background-color: var(--paper-raised) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.bg-slate-50, .bg-slate-100, .bg-gray-50, .bg-gray-100) {
+        background-color: color-mix(in srgb, var(--ink) 3%, var(--paper)) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.text-slate-900, .text-slate-800, .text-slate-700, .text-gray-900, .text-gray-800, .text-gray-700) {
+        color: var(--ink) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.text-slate-600, .text-slate-500, .text-slate-400, .text-gray-600, .text-gray-500, .text-gray-400) {
+        color: var(--muted) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.text-indigo-600, .text-indigo-700, .text-sky-600, .text-fuchsia-600, .text-rose-600, .text-amber-600, .text-emerald-600) {
+        color: var(--accent) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.bg-indigo-600, .bg-indigo-500) {
+        background-color: var(--accent) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.hover\:bg-indigo-500:hover, .hover\:bg-indigo-600:hover) {
+        background-color: color-mix(in srgb, var(--accent) 82%, black) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.bg-indigo-50, .bg-sky-50, .bg-fuchsia-50, .bg-rose-50, .bg-amber-50, .bg-emerald-50) {
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--paper-raised)) !important;
+    }
+
+    .admin-shell .bg-gradient-to-br {
+        background-image: none !important;
+        background-color: var(--accent) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) [class*="border-slate-"],
+    :is(.admin-shell, .auth-shell) [class*="border-gray-"] {
+        border-color: var(--line) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) [class*="ring-slate-"],
+    :is(.admin-shell, .auth-shell) [class*="ring-gray-"] {
+        --tw-ring-color: var(--line) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.ring-indigo-500, .ring-indigo-600) {
+        --tw-ring-color: var(--accent) !important;
+    }
+
+    .admin-shell :is(.divide-slate-100, .divide-slate-200) > :not([hidden]) ~ :not([hidden]) {
+        border-color: var(--line) !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.rounded-2xl, .rounded-xl, .rounded-lg, .rounded-md) {
+        border-radius: 2px !important;
+    }
+
+    :is(.admin-shell, .auth-shell) :is(.shadow-sm, .shadow, .shadow-lg, .shadow-xl) {
+        box-shadow: none !important;
+    }
+
+    .admin-shell :is(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), textarea, select) {
+        min-height: 44px;
+        border: 1px solid var(--line) !important;
+        border-radius: 0 !important;
+        background-color: var(--paper) !important;
+        color: var(--ink) !important;
+        box-shadow: none !important;
+        --tw-ring-color: var(--accent) !important;
+    }
+
+    .admin-shell textarea {
+        padding: 0.75rem !important;
+    }
+
+    .admin-shell :is(input, textarea)::placeholder {
+        color: color-mix(in srgb, var(--muted) 68%, transparent) !important;
+    }
+
+    .admin-shell :is(input, textarea, select):focus {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 1px var(--accent) !important;
+        outline: none !important;
+    }
+
+    .admin-shell input[type='checkbox'],
+    .admin-shell input[type='radio'] {
+        border-color: var(--line) !important;
+        background-color: var(--paper) !important;
+        color: var(--accent) !important;
+        --tw-ring-color: var(--accent) !important;
+        --tw-ring-offset-color: var(--paper) !important;
+    }
+
+    .admin-shell input[type='checkbox']:checked,
+    .admin-shell input[type='radio']:checked {
+        background-color: var(--accent) !important;
+        border-color: var(--accent) !important;
+    }
+
+    .admin-shell input[type='color'] {
+        border: 1px solid var(--line) !important;
+        border-radius: 0 !important;
+        background: var(--paper) !important;
+        padding: 2px;
+    }
+
+    .admin-shell code {
+        color: var(--accent);
+    }
+
+    .admin-shell .hover\:bg-slate-50:hover,
+    .admin-shell .hover\:bg-gray-50:hover {
+        background-color: var(--paper) !important;
+    }
+
+}
+
+@media (min-width: 640px) {
+    .admin-content > .mx-auto {
+        padding-inline: 1.5rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .admin-content ul > li {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .admin-content ul > li > :last-child {
+        margin-left: auto;
+    }
+
+    .admin-page-header h2 {
+        font-size: 1.5rem !important;
+    }
+}
