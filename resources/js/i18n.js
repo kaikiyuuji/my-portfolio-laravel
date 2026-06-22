@@ -58,6 +58,10 @@ const messages = {
             titleSuffix: '?',
             subtitle: 'Aberto a oportunidades, colaborações e conversas sobre tecnologia.',
         },
+        linkLibrary: {
+            label: 'Minha biblioteca de links',
+            ariaLabel: 'Abrir o Klink Hub, minha biblioteca de links',
+        },
         footer: {
             rights: 'Todos os direitos reservados.',
             built: 'Construído com Laravel + Vue + Inertia.',
@@ -140,6 +144,10 @@ const messages = {
             titlePart2: 'build something together',
             titleSuffix: '',
             subtitle: 'Open to opportunities, collaborations, and tech conversations.',
+        },
+        linkLibrary: {
+            label: 'My link library',
+            ariaLabel: 'Open Klink Hub, my link library',
         },
         footer: {
             rights: 'All rights reserved.',

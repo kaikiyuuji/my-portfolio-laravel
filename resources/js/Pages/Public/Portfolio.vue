@@ -9,6 +9,7 @@ import { useTranslatable } from '@/Composables/useTranslatable';
 
 const { t, tm } = useI18n();
 const { tr } = useTranslatable();
+const linkLibraryUrl = 'https://klink-hub.vercel.app/';
 
 const props = defineProps({
     profile: { type: Object, required: true },
@@ -462,31 +463,58 @@ function formatPeriod(start, end) {
                     <div class="dot-field reveal reveal-delay-1 flex flex-col justify-between p-6 sm:p-8">
                         <div class="w-fit border border-[var(--ink)] bg-[var(--paper-raised)] px-4 py-3 shadow-[4px_4px_0_var(--accent)]">
                             <p class="technical-label text-[var(--ink)]">{{ t('design.network') }}</p>
-                            <p class="technical-label mt-1 text-[var(--ink)]">{{ String(socialLinks.length).padStart(2, '0') }} {{ t('design.activeLinks') }}</p>
+                            <p class="technical-label mt-1 text-[var(--ink)]">{{ String(socialLinks.length + 1).padStart(2, '0') }} {{ t('design.activeLinks') }}</p>
                         </div>
 
-                        <div v-if="socialLinks.length" class="my-10 grid grid-cols-2 border-l border-t border-[var(--line)]">
+                        <div class="my-8">
+                            <div v-if="socialLinks.length" class="mb-3 grid grid-cols-2 border-l border-t border-[var(--line)]">
+                                <a
+                                    v-for="link in socialLinks"
+                                    :key="link.id"
+                                    :href="link.url"
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="group grid aspect-square place-items-center border-b border-r border-[var(--line)] bg-[var(--paper-raised)] transition-colors hover:bg-[var(--ink)] hover:text-[var(--paper)]"
+                                    :aria-label="link.platform"
+                                    :title="link.platform"
+                                >
+                                    <img
+                                        v-if="link.icon_slug && !iconHasFailed('social', link.id)"
+                                        :src="currentIconUrl('social', link.id, link.icon_slug)"
+                                        :alt="link.platform"
+                                        class="h-8 w-8 transition-all duration-300 group-hover:scale-110 group-hover:invert"
+                                        :class="{ 'dark:invert dark:group-hover:invert-0': shouldInvertIcon('social', link.id) }"
+                                        loading="lazy"
+                                        @error="onIconError('social', link.id, link.icon_slug)"
+                                    />
+                                    <span v-else class="font-mono text-xl font-bold">
+                                        {{ link.platform.charAt(0).toUpperCase() }}
+                                    </span>
+                                </a>
+                            </div>
+
                             <a
-                                v-for="link in socialLinks"
-                                :key="link.id"
-                                :href="link.url"
+                                :href="linkLibraryUrl"
                                 target="_blank"
                                 rel="noopener"
-                                class="group grid aspect-square place-items-center border-b border-r border-[var(--line)] bg-[var(--paper-raised)] transition-colors hover:bg-[var(--ink)] hover:text-[var(--paper)]"
-                                :aria-label="link.platform"
-                                :title="link.platform"
+                                class="group flex min-h-16 items-center justify-between gap-3 border border-[var(--ink)] bg-[var(--paper-raised)] px-3 py-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--ink)] hover:text-[var(--paper)] hover:shadow-[4px_4px_0_var(--accent)]"
+                                :aria-label="t('linkLibrary.ariaLabel')"
                             >
-                                <img
-                                    v-if="link.icon_slug && !iconHasFailed('social', link.id)"
-                                    :src="currentIconUrl('social', link.id, link.icon_slug)"
-                                    :alt="link.platform"
-                                    class="h-8 w-8 transition-all duration-300 group-hover:scale-110 group-hover:invert"
-                                    :class="{ 'dark:invert dark:group-hover:invert-0': shouldInvertIcon('social', link.id) }"
-                                    loading="lazy"
-                                    @error="onIconError('social', link.id, link.icon_slug)"
-                                />
-                                <span v-else class="font-mono text-xl font-bold">
-                                    {{ link.platform.charAt(0).toUpperCase() }}
+                                <span class="flex min-w-0 items-center gap-3">
+                                    <span class="blueprint-grid grid h-9 w-9 shrink-0 place-items-center border border-[var(--ink)] font-mono text-[9px] font-bold">
+                                        KH
+                                    </span>
+                                    <span class="min-w-0">
+                                        <span class="block font-mono text-[10px] font-bold uppercase tracking-[0.12em]">
+                                            Klink Hub
+                                        </span>
+                                        <span class="mt-0.5 block text-xs text-[var(--muted)] transition-colors group-hover:text-[var(--paper)]/70">
+                                            {{ t('linkLibrary.label') }}
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="shrink-0 font-mono text-lg text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true">
+                                    ↗
                                 </span>
                             </a>
                         </div>
