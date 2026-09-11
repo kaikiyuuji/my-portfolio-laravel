@@ -15,6 +15,7 @@ const navItems = computed(() => [
     { label: 'Projetos', index: '05', route: 'admin.projects.index', pattern: 'admin.projects.*' },
     { label: 'Redes sociais', index: '06', route: 'admin.social-links.index', pattern: 'admin.social-links.*' },
     { label: 'Blog', index: '07', route: 'admin.posts.index', pattern: 'admin.posts.*' },
+    { label: 'Livros', index: '08', route: 'admin.books.index', pattern: 'admin.books.*' },
 ]);
 
 function closeMobile() {
