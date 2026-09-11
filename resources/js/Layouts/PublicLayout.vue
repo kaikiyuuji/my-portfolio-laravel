@@ -19,11 +19,12 @@ const mobileOpen = ref(false);
 const navItems = computed(() => [
     { href: '/#sobre', label: t('nav.about'), index: '01' },
     { href: '/#stacks', label: t('nav.stacks'), index: '02' },
-    { href: '/#experiencia', label: t('nav.experience'), index: '03' },
-    { href: '/#projetos', label: t('nav.projects'), index: '04' },
-    { href: '/#contato', label: t('nav.contact'), index: '05' },
-    { href: '/blog', label: t('nav.blog'), index: '06' },
-    { href: '/livros', label: t('nav.books'), index: '07' },
+    { href: '/#habilidades', label: t('nav.skills'), index: '03' },
+    { href: '/#experiencia', label: t('nav.experience'), index: '04' },
+    { href: '/#projetos', label: t('nav.projects'), index: '05' },
+    { href: '/#contato', label: t('nav.contact'), index: '06' },
+    { href: '/blog', label: t('nav.blog'), index: '07' },
+    { href: '/livros', label: t('nav.books'), index: '08' },
 ]);
 
 function handleScroll() {
@@ -68,7 +69,7 @@ onBeforeUnmount(() => {
                         v-for="item in navItems"
                         :key="item.href"
                         :href="item.href"
-                        class="group flex h-full items-center gap-1.5 border-l border-transparent px-3 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--muted)] transition-colors last:border-r hover:border-[var(--line)] hover:bg-[var(--paper-raised)] hover:text-[var(--ink)]"
+                        class="group flex h-full items-center gap-1.5 border-l border-transparent px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--muted)] transition-colors last:border-r hover:border-[var(--line)] hover:bg-[var(--paper-raised)] hover:text-[var(--ink)]"
                     >
                         <span class="text-[var(--accent)]">{{ item.index }}</span>
                         <span>{{ item.label }}</span>

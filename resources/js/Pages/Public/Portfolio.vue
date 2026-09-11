@@ -17,7 +17,13 @@ const props = defineProps({
     experiences: { type: Array, default: () => [] },
     projects: { type: Array, default: () => [] },
     socialLinks: { type: Array, default: () => [] },
+    skills: { type: Array, default: () => [] },
 });
+
+const skillGroups = computed(() => ['technical', 'interpersonal'].map((category) => ({
+    category,
+    items: props.skills.filter((skill) => skill.category === category),
+})).filter((group) => group.items.length));
 
 useScrollReveal('.reveal');
 
@@ -206,6 +212,9 @@ function formatPeriod(start, end) {
                                     <span aria-hidden="true">→</span>
                                 </a>
                             </div>
+                            <a :href="route('resume.download')" class="reveal mt-5 inline-flex min-h-11 items-center gap-3 border-b border-[var(--line)] font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)] hover:border-[var(--accent)]">
+                                {{ t('hero.exportResume') }} <span aria-hidden="true">↓</span>
+                            </a>
                         </div>
                     </div>
 
@@ -292,11 +301,41 @@ function formatPeriod(start, end) {
             </div>
         </section>
 
+        <section id="habilidades" class="portfolio-section scroll-mt-20 py-20 sm:py-28">
+            <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 grid gap-6 lg:grid-cols-12 lg:items-end">
+                    <div class="reveal lg:col-span-8">
+                        <p class="technical-label mb-4 !text-[var(--accent)]">03 / {{ t('skills.label') }}</p>
+                        <h2 class="section-heading">{{ t('skills.title') }}</h2>
+                    </div>
+                    <p class="reveal max-w-md text-sm leading-6 text-[var(--muted)] lg:col-span-4">{{ t('skills.subtitle') }}</p>
+                </div>
+                <div v-if="skillGroups.length" class="space-y-8">
+                    <section v-for="group in skillGroups" :key="group.category" :aria-labelledby="`skills-${group.category}`" class="border border-[var(--line)] bg-[var(--paper-raised)]">
+                        <div class="flex items-center justify-between gap-4 border-b border-[var(--line)] px-5 py-4 sm:px-7">
+                            <h3 :id="`skills-${group.category}`" class="font-mono text-xs font-semibold uppercase tracking-wider">{{ t(`skills.${group.category}`) }}</h3>
+                            <span class="font-mono text-[10px] text-[var(--accent)]" aria-hidden="true">{{ String(group.items.length).padStart(2, '0') }}</span>
+                        </div>
+                        <ul class="grid md:grid-cols-2">
+                            <li v-for="(skill, index) in group.items" :key="skill.id" class="reveal flex min-w-0 gap-4 border-b border-[var(--line)] p-5 last:border-b-0 md:odd:border-r sm:gap-5 sm:p-7">
+                                <span class="mt-0.5 font-mono text-[10px] text-[var(--accent)]" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
+                                <div class="min-w-0">
+                                    <h4 class="break-words text-lg font-semibold leading-snug tracking-[-0.035em]">{{ tr(skill.title) }}</h4>
+                                    <p v-if="tr(skill.description)" class="mt-3 whitespace-pre-line break-words text-sm leading-6 text-[var(--muted)]">{{ tr(skill.description) }}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+                <p v-else class="border border-[var(--line)] p-8 text-center text-[var(--muted)]">{{ t('skills.empty') }}</p>
+            </div>
+        </section>
+
         <section id="experiencia" class="portfolio-section py-20 sm:py-28">
             <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="grid gap-12 lg:grid-cols-12">
                     <div class="reveal lg:col-span-4">
-                        <p class="technical-label mb-4 text-[var(--accent)]">03 / {{ t('experience.label') }}</p>
+                        <p class="technical-label mb-4 text-[var(--accent)]">04 / {{ t('experience.label') }}</p>
                         <h2 class="section-heading">{{ t('experience.title') }}</h2>
                         <div class="dot-field mt-10 hidden aspect-square max-w-64 border border-[var(--line)] lg:block">
                             <div class="blueprint-grid m-8 h-[calc(100%-4rem)] border border-[var(--ink)]"></div>
@@ -346,7 +385,7 @@ function formatPeriod(start, end) {
             <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 flex flex-col gap-6 border-b border-[var(--line)] pb-8 sm:flex-row sm:items-end sm:justify-between">
                     <div class="reveal">
-                        <p class="technical-label mb-4 text-[var(--accent)]">04 / {{ t('projects.label') }}</p>
+                        <p class="technical-label mb-4 text-[var(--accent)]">05 / {{ t('projects.label') }}</p>
                         <h2 class="section-heading">{{ t('projects.title') }}</h2>
                     </div>
                     <p class="technical-label reveal reveal-delay-1">{{ t('design.archive') }}</p>
@@ -441,7 +480,7 @@ function formatPeriod(start, end) {
                 <div class="grid overflow-hidden border border-[var(--ink)] lg:grid-cols-[1fr_280px]">
                     <div class="blueprint-grid reveal p-6 sm:p-10 lg:p-14">
                         <p class="mb-10 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">
-                            05 / {{ t('contact.label') }}
+                            06 / {{ t('contact.label') }}
                         </p>
                         <h2 class="max-w-4xl text-5xl font-medium leading-[0.86] tracking-[-0.07em] sm:text-7xl lg:text-8xl">
                             {{ t('contact.titlePart1') }} {{ t('contact.titlePart2') }}{{ t('contact.titleSuffix') }}

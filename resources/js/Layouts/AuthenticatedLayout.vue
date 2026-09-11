@@ -16,6 +16,8 @@ const navItems = computed(() => [
     { label: 'Redes sociais', index: '06', route: 'admin.social-links.index', pattern: 'admin.social-links.*' },
     { label: 'Blog', index: '07', route: 'admin.posts.index', pattern: 'admin.posts.*' },
     { label: 'Livros', index: '08', route: 'admin.books.index', pattern: 'admin.books.*' },
+    { label: 'Habilidades', index: '09', route: 'admin.skills.index', pattern: 'admin.skills.*' },
+    { label: 'Currículo', index: '10', route: 'admin.resume.edit', pattern: 'admin.resume.*' },
 ]);
 
 function closeMobile() {

@@ -8,6 +8,7 @@ use App\Services\ProfileService;
 use App\Services\ProjectService;
 use App\Services\SocialLinkService;
 use App\Services\StackService;
+use App\Services\SkillService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,6 +20,7 @@ class PortfolioController extends Controller
         private ExperienceService $experienceService,
         private ProjectService $projectService,
         private SocialLinkService $socialLinkService,
+        private SkillService $skillService,
     ) {}
 
     public function index(): Response
@@ -29,6 +31,7 @@ class PortfolioController extends Controller
             'experiences' => $this->experienceService->all(),
             'projects' => $this->projectService->featured(),
             'socialLinks' => $this->socialLinkService->all(),
+            'skills' => $this->skillService->visible(),
         ]);
     }
 }

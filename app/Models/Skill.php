@@ -6,40 +6,42 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
-class Experience extends Model
+class Skill extends Model
 {
     use HasTranslations;
 
+    public const CATEGORIES = ['technical', 'interpersonal'];
+
     protected $fillable = [
-        'company',
-        'role',
+        'title',
         'description',
-        'location',
-        'start_date',
-        'end_date',
+        'category',
         'order',
+        'is_visible',
     ];
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'order' => 'integer',
-    ];
+    protected $hidden = ['seed_key'];
 
-    public array $translatable = [
-        'company',
-        'role',
-        'description',
-    ];
+    protected $attributes = ['order' => 0, 'is_visible' => true];
+
+    protected $casts = ['order' => 'integer', 'is_visible' => 'boolean'];
+
+    public array $translatable = ['title', 'description'];
 
     public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('start_date', 'desc');
+        return $query->orderBy('order')->orderBy('id');
+    }
+
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('is_visible', true);
     }
 
     public function toArray(): array
     {
         $array = parent::toArray();
+
         foreach ($this->getTranslatableAttributes() as $field) {
             $array[$field] = $this->getTranslations($field);
         }

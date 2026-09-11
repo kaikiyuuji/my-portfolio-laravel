@@ -10,6 +10,8 @@ const modules = [
     { index: '05', title: 'Redes sociais', description: 'Canais públicos e perfis externos.', route: 'admin.social-links.index', mark: 'S' },
     { index: '06', title: 'Blog', description: 'Artigos, capas e publicação editorial.', route: 'admin.posts.index', mark: 'B' },
     { index: '07', title: 'Livros', description: 'Biblioteca, capas e leituras acadêmicas e pessoais.', route: 'admin.books.index', mark: 'L' },
+    { index: '08', title: 'Habilidades', description: 'Competências técnicas e interpessoais.', route: 'admin.skills.index', mark: 'H' },
+    { index: '09', title: 'Currículo', description: 'Arquivo disponível para download no portfolio.', route: 'admin.resume.edit', mark: 'C' },
 ];
 </script>
 
