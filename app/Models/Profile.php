@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Profile extends Model
@@ -24,10 +26,19 @@ class Profile extends Model
         'resume_url',
     ];
 
+    protected $appends = ['avatar_url'];
+
     public array $translatable = [
         'headline',
         'bio',
     ];
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->avatar_path ? Storage::url($this->avatar_path) : null
+        );
+    }
 
     public function toArray(): array
     {

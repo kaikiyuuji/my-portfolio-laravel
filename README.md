@@ -27,7 +27,7 @@ Aplicação web de portfolio profissional construída em Laravel + Inertia + Vue
 
 ### Painel Administrativo (`/admin`)
 - Single-admin com bloqueio de registro público e rate limit no login (5/min por IP+email)
-- CRUD completo: Perfil, Stacks, Experiências, Projetos, Redes Sociais, Posts (Blog)
+- CRUD completo: Perfil, Stacks, Experiências, Projetos, Redes Sociais, Posts (Blog), Livros
 - Reordenação drag-free de listas (stacks/projetos) via Axios + Inertia partial reload
 - Upload de imagens com substituição segura (salva novo → atualiza banco → deleta antigo)
 - Suporte multi-locale por campo (título PT + título EN, etc.)
@@ -44,6 +44,18 @@ Aplicação web de portfolio profissional construída em Laravel + Inertia + Vue
 - Listagem paginada de posts publicados
 - Renderização de Markdown com DOMPurify (XSS-safe contra comprometimento de admin)
 - Posts relacionados, tempo estimado de leitura, capa, OG/Twitter meta tags
+
+### Biblioteca Pública (`/livros`)
+- Estantes separadas para livros acadêmicos e pessoais, com busca por título ou autor e paginação
+- Livros em 3D com CSS, inclinação por mouse e detalhes com rotação por controle deslizante, inclusive por toque
+- Navegação por teclado, foco contido nos detalhes e respeito à preferência de movimento reduzido
+- Temas claro/escuro e interface PT/EN; títulos e autores preservam o idioma da edição
+- Cadastro em **Painel → Livros** (`/admin/books`): título, autor, coleção, comentário opcional e capa JPG/PNG/WebP de até 5 MB
+- Capa opcional com alternativa tipográfica; prévia, substituição e remoção de imagem no painel
+- Controle de publicação: rascunhos ficam disponíveis apenas no painel
+- Link de compra opcional por livro; botão nos detalhes abre a loja em outra aba
+
+Após atualizar o projeto, execute `php artisan migrate` e `npm run build`. Para servir capas no disco público local, execute `php artisan storage:link` se o link ainda não existir.
 
 ---
 
@@ -136,7 +148,8 @@ Suite Pest/PHPUnit cobrindo:
 - Bloqueio incondicional de registro (`EnsureRegistrationIsDisabled`)
 - CRUD de cada módulo administrativo (Profile, Stack, Experience, Project, SocialLink, Post)
 - Serialização traduzível (`PortfolioTranslatableTest` como guard de regressão)
-- Landing pública e blog (`PortfolioTest`, `BlogTest`)
+- Landing pública, blog e biblioteca (`PortfolioTest`, `BlogTest`, `BooksTest`)
+- Cadastro de livros, visibilidade, filtros e ciclo de vida das capas (`BookTest`, `BookServiceTest`)
 
 ```bash
 php artisan test                         # serial

@@ -29,7 +29,7 @@ const form = useForm({
     resume_url: props.profile.resume_url || '',
 });
 
-const avatarPreview = ref(props.profile.avatar_path ? '/storage/' + props.profile.avatar_path : null);
+const avatarPreview = ref(props.profile.avatar_url ?? null);
 const fileInput = ref(null);
 
 const handleAvatarChange = (e) => {

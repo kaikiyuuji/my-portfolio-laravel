@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Project extends Model
@@ -20,10 +22,19 @@ class Project extends Model
         'is_featured',
     ];
 
+    protected $appends = ['image_url'];
+
     protected $casts = [
         'order' => 'integer',
         'is_featured' => 'boolean',
     ];
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->image_path ? Storage::url($this->image_path) : null
+        );
+    }
 
     public array $translatable = [
         'title',

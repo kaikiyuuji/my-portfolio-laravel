@@ -136,7 +136,7 @@ const submit = () => {
                                         id="is_current"
                                         type="checkbox"
                                         v-model="isCurrent"
-                                        class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                        class="h-4 w-4 rounded border-[var(--line)] bg-[var(--paper)] text-[var(--accent)] focus:ring-[var(--accent)] focus:ring-offset-[var(--paper)]"
                                     />
                                     <label for="is_current" class="text-sm text-slate-600">
                                         Emprego atual

@@ -27,7 +27,7 @@ const destroy = (slug) => {
     });
 };
 
-const imageSrc = (path) => (path ? '/storage/' + path : null);
+const imageSrc = (post) => post.image_url ?? null;
 
 const formatDate = (iso) => {
     if (!iso) return '—';
@@ -73,7 +73,7 @@ const formatDate = (iso) => {
                     <li v-for="post in items" :key="post.id" class="flex items-start gap-4 px-6 py-5 hover:bg-slate-50 transition-colors">
                         <!-- Cover -->
                         <div class="w-24 h-20 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-slate-200">
-                            <img v-if="post.image_path" :src="imageSrc(post.image_path)" :alt="tr(post.title)" class="w-full h-full object-cover" />
+                            <img v-if="post.image_url" :src="imageSrc(post)" :alt="tr(post.title)" class="w-full h-full object-cover" />
                             <svg v-else class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
