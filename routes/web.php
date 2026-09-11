@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\ExperienceController as AdminExperienceController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\SocialLinkController as AdminSocialLinkController
 use App\Http\Controllers\Admin\StackController as AdminStackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\BookController;
 use App\Http\Controllers\Public\PortfolioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +20,9 @@ Route::get('/', [PortfolioController::class, 'index'])->name('home');
 // Public blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Public library
+Route::get('/livros', [BookController::class, 'index'])->name('books.index');
 
 // ─── Admin Routes (protected by auth middleware) ──────────────
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
@@ -59,6 +64,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('posts', AdminPostController::class)
         ->except(['show'])
         ->names('admin.posts');
+
+    Route::resource('books', AdminBookController::class)
+        ->except(['show'])
+        ->names('admin.books');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

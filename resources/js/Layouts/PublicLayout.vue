@@ -23,6 +23,7 @@ const navItems = computed(() => [
     { href: '/#projetos', label: t('nav.projects'), index: '04' },
     { href: '/#contato', label: t('nav.contact'), index: '05' },
     { href: '/blog', label: t('nav.blog'), index: '06' },
+    { href: '/livros', label: t('nav.books'), index: '07' },
 ]);
 
 function handleScroll() {
@@ -51,7 +52,7 @@ onBeforeUnmount(() => {
                 ? 'border-technical bg-[color:var(--paper)]/95 shadow-[0_8px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl'
                 : 'border-transparent bg-[color:var(--paper)]/80 backdrop-blur-md'"
         >
-            <div class="mx-auto grid h-[72px] max-w-7xl grid-cols-[1fr_auto] items-center px-4 sm:px-6 lg:grid-cols-[240px_1fr_auto] lg:px-8">
+            <div class="mx-auto grid h-[72px] max-w-7xl grid-cols-[1fr_auto] items-center px-4 sm:px-6 xl:grid-cols-[200px_1fr_auto] lg:px-8">
                 <a href="/#topo" class="group flex min-w-0 items-center gap-3">
                     <span class="blueprint-grid grid h-9 w-9 shrink-0 place-items-center border border-[var(--ink)] font-mono text-xs font-bold transition-transform duration-300 group-hover:-rotate-3">
                         {{ profileName.slice(0, 2).toUpperCase() }}
@@ -62,7 +63,7 @@ onBeforeUnmount(() => {
                     </span>
                 </a>
 
-                <nav class="hidden h-full items-center justify-center lg:flex">
+                <nav class="hidden h-full items-center justify-center xl:flex" :aria-label="t('a11y.navigation')">
                     <a
                         v-for="item in navItems"
                         :key="item.href"
@@ -102,7 +103,7 @@ onBeforeUnmount(() => {
                     <button
                         type="button"
                         @click="mobileOpen = !mobileOpen"
-                        class="grid h-9 w-9 place-items-center border border-[var(--line)] bg-[var(--paper-raised)] lg:hidden"
+                        class="grid h-9 w-9 place-items-center border border-[var(--line)] bg-[var(--paper-raised)] xl:hidden"
                         :aria-expanded="mobileOpen"
                         :aria-label="t('a11y.menu')"
                     >
@@ -116,7 +117,7 @@ onBeforeUnmount(() => {
 
             <div
                 v-show="mobileOpen"
-                class="border-t border-[var(--line)] bg-[var(--paper)] lg:hidden"
+                class="border-t border-[var(--line)] bg-[var(--paper)] xl:hidden"
             >
                 <nav class="mx-auto grid max-w-7xl grid-cols-2 px-4 py-3 sm:px-6">
                     <a
