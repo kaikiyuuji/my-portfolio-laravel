@@ -26,6 +26,7 @@ class UpdateExperienceRequest extends FormRequest
             'start_date' => ['required', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'order' => ['nullable', 'integer', 'min:0'],
+            'location' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

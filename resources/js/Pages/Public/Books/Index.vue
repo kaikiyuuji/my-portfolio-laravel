@@ -118,7 +118,7 @@ onBeforeUnmount(restoreScrolling);
         <section class="library-hero border-b border-[var(--line)]">
             <div class="mx-auto grid max-w-7xl border-x border-[var(--line)] md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_360px]">
                 <div class="px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-                    <p class="technical-label mb-6 !text-[var(--accent)]">07 / {{ t('books.label') }}</p>
+                    <p class="technical-label mb-6 !text-[var(--accent)]">08 / {{ t('books.label') }}</p>
                     <h1 class="text-[clamp(3.5rem,9vw,7.5rem)] font-medium leading-[0.9] tracking-[-0.075em]">{{ t('books.title') }}<span class="text-[var(--accent)]">.</span></h1>
                     <p class="mt-7 max-w-lg text-base leading-7 text-[var(--muted)] sm:text-lg">{{ t('books.subtitle') }}</p>
                     <a href="#acervo" class="mt-8 inline-flex min-h-11 items-center gap-5 border-b border-[var(--ink)] font-mono text-[10px] font-bold uppercase tracking-widest">

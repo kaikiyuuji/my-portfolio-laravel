@@ -12,6 +12,15 @@ const messages = {
             contact: 'Contato',
             blog: 'Blog',
             books: 'Livros',
+            skills: 'Habilidades',
+        },
+        skills: {
+            label: 'Competências',
+            title: 'Habilidades e competências',
+            subtitle: 'Conhecimentos técnicos e habilidades que aplico no dia a dia.',
+            technical: 'Habilidades técnicas',
+            interpersonal: 'Competências profissionais',
+            empty: 'Nenhuma habilidade cadastrada ainda.',
         },
         books: {
             title: 'Biblioteca',
@@ -75,6 +84,7 @@ const messages = {
             viewProjects: 'Ver Projetos',
             contactMe: 'Entrar em contato',
             resume: 'Currículo',
+            exportResume: 'Exportar currículo em PDF',
         },
         stacks: {
             label: 'Tecnologias',
@@ -143,6 +153,15 @@ const messages = {
             contact: 'Contact',
             blog: 'Blog',
             books: 'Books',
+            skills: 'Skills',
+        },
+        skills: {
+            label: 'Competencies',
+            title: 'Skills and competencies',
+            subtitle: 'Technical knowledge and skills I use in my daily work.',
+            technical: 'Technical skills',
+            interpersonal: 'Professional competencies',
+            empty: 'No skills added yet.',
         },
         books: {
             title: 'Library',
@@ -206,6 +225,7 @@ const messages = {
             viewProjects: 'View Projects',
             contactMe: 'Get in touch',
             resume: 'Resume',
+            exportResume: 'Download résumé (PDF, Portuguese)',
         },
         stacks: {
             label: 'Technologies',

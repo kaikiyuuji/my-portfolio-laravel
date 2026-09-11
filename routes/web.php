@@ -7,15 +7,19 @@ use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\SocialLinkController as AdminSocialLinkController;
 use App\Http\Controllers\Admin\StackController as AdminStackController;
+use App\Http\Controllers\Admin\SkillController as AdminSkillController;
+use App\Http\Controllers\Admin\ResumeController as AdminResumeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\BookController;
 use App\Http\Controllers\Public\PortfolioController;
+use App\Http\Controllers\Public\ResumeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Public landing page
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
+Route::get('/curriculo/pdf', [ResumeController::class, 'download'])->name('resume.download');
 
 // Public blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
@@ -68,6 +72,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::resource('books', AdminBookController::class)
         ->except(['show'])
         ->names('admin.books');
+
+    Route::resource('skills', AdminSkillController::class)
+        ->except(['show'])
+        ->names('admin.skills');
+
+    Route::get('/resume', [AdminResumeController::class, 'edit'])->name('admin.resume.edit');
+    Route::put('/resume', [AdminResumeController::class, 'update'])->name('admin.resume.update');
 });
 
 // ─── Breeze User Account Routes ───────────────────────────────

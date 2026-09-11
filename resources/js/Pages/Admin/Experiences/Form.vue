@@ -29,6 +29,7 @@ const form = useForm({
     company: toTrans(props.experience?.company),
     role: toTrans(props.experience?.role),
     description: toTrans(props.experience?.description),
+    location: props.experience?.location ?? '',
     start_date: toDateInput(props.experience?.start_date),
     end_date: toDateInput(props.experience?.end_date),
     order: props.experience?.order ?? 0,
@@ -80,6 +81,11 @@ const submit = () => {
                 <div class="shadow-sm sm:overflow-hidden sm:rounded-2xl border border-slate-100 bg-white">
                     <div class="space-y-6 px-4 py-6 sm:p-8">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <div class="sm:col-span-2">
+                                <InputLabel for="location" value="Localidade (opcional)" />
+                                <TextInput id="location" v-model="form.location" class="mt-1 block w-full" maxlength="255" placeholder="Ex.: Belém, PA" />
+                                <InputError class="mt-2" :message="form.errors.location" />
+                            </div>
                             <!-- Company PT -->
                             <div class="sm:col-span-1">
                                 <InputLabel for="company_pt" value="Empresa (PT)" />
